@@ -1,2 +1,0 @@
-{$result|json_encode}
-
