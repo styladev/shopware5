@@ -1,4 +1,3 @@
-<h1>Magazine</h1>
 {extends file='parent:frontend/custom/index.tpl'}
 
 {block name='frontend_index_header'}
