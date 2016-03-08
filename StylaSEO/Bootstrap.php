@@ -54,7 +54,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $form->setElement('text', 'styla_source_url', array(
             'label' => 'Styla SEO Source URL',
             'required' => true,
-            'value' => 'http://seo.styla.com/',
+            'value' => 'http://live.styla.com/',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_js_url', array(
@@ -108,7 +108,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $action = StylaUtils::getActionFromUrl();
 
         $this->registerTemplateDir();
-        $request->setControllerName('magazin');	//'magazin'
+        $request->setControllerName($controller);	//'magazin'
         $request->setActionName($action);
 
     }
