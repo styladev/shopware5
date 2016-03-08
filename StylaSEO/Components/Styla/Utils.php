@@ -2,27 +2,23 @@
 
 class StylaUtils{
 
-    const STYLA_URL = 'http://dev.styla.com/';	//'http://www.amazine.com/';
+    const STYLA_URL = 'http://live.styla.com/';
     const CACHE_TTL = 3600; // Cache expires in 1 hour
     protected static $_username = '';
     protected static $_res = '';
 
     public static function getJsEmbedCode($username, $js_url = null){
         if(!$js_url)
-                $js_url = self::STYLA_URL;
+            $js_url = self::STYLA_URL;
 
-        //$url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/embed/'.$username.'.js';
-        //return '<script id="amazineEmbed" type="text/javascript" src="'.$url.'" defer="defer"></script>';
-	$url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/preloader/'.$username.'.js';
-        //return '<script id="stylaMagazine" type="text/javascript" src="'.$url.'" defer="defer"></script>';
-	return '<script type="text/javascript" src="'.$url.'" defer="defer"></script>';
+	    $url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/preloader/'.$username.'.js';
+	    return '<script type="text/javascript" src="'.$url.'" defer="defer"></script>';
     }
 
     public static function getActionFromUrl($basedir = 'magazin'){
         $url = $_SERVER['REQUEST_URI'];
         $action = preg_filter('(/en)?/'.$basedir.'/([^\/]+).*/i', '$2', $url);
-	return $action;        
-	///return empty($action) ? 'index' : $action;
+	    return $action;
     }
 
     public static function getParamFromUrl($search){
@@ -46,11 +42,11 @@ class StylaUtils{
         $type = $params['type'];
         self::$_username = $username;
 
-        if($type=='tag')
+        if($type == 'tag')
             $url = $src_url.'user/'.$username.'/tag/'.$params['tagname'];
-        elseif($type=='story')
+        elseif($type == 'story')
             $url = $src_url.'story/'.$params['storyname'];
-        elseif($type=='user')
+        elseif($type == 'user')
             $url = $src_url.'user/'.$params['username'];
         else
             $url = $src_url.'user/'.$username; // magazine default

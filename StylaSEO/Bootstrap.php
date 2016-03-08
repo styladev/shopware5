@@ -18,9 +18,8 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
     public function getVersion()
     {
-        return '0.9.5';
+        return '5.0.0';
     }
-
 
     public function getInfo()
     {
@@ -38,15 +37,10 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
 
     public function install(){
-        $this->createDatabase();
         $this->registerEvents();
         $this->createConfigForm();
 	$this->registerController('Frontend', 'StylaApi');
         return true;
-    }
-
-    protected function createDatabase(){
-
     }
 
     protected function createConfigForm(){
@@ -54,23 +48,23 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
         // Amazine settings
         $form->setElement('text', 'styla_username', array(
-            'label' => 'Amazine/Styla Username',
+            'label' => 'Styla Username',
             'required' => true,
         ));
         $form->setElement('text', 'styla_source_url', array(
-            'label' => 'Styla Magazine Source URL',
+            'label' => 'Styla SEO Source URL',
             'required' => true,
-            'value' => 'http://www.amazine.com/',
+            'value' => 'http://seo.styla.com/',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_js_url', array(
             'label' => 'Styla JS Snippet URL',
             'required' => true,
-            'value' => 'http://www.amazine.com/',
+            'value' => 'http://live.styla.com/',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_basedir', array(
-            'label' => 'Amazine/Styla Base Folder',
+            'label' => 'Styla Base Folder',
             'required' => true,
             'value' => 'magazin',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
@@ -81,7 +75,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->subscribeEvent('Enlight_Controller_Front_PreDispatch', 'onPreDispatch');
         $this->subscribeEvent('Enlight_Controller_Front_PostDispatch', 'onPostDispatch');
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_Magazin', 'onGetControllerPathFrontend');
-	$this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaApi', 'onGetControllerPathFrontend');
+	    $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaApi', 'onGetControllerPathFrontend');
 
         return array(
             'success' => true,
@@ -97,11 +91,11 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->_magazin_basedir = $this->Config()->get('styla_basedir', 'magazin');
 
         if( ($request->getRequestUri() == '/'.$this->_magazin_basedir || strpos($request->getRequestUri(), '/'.$this->_magazin_basedir.'/') !== false) ) {
-		$controller	= 'magazin';
-	} else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
-		$controller	= 'stylaapi';
-	} else {
-            	return;
+		    $controller	= 'magazin';
+        } else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
+		    $controller	= 'stylaapi';
+	    } else {
+            return;
         }
 
         if(!$this->_styla_username){
@@ -114,7 +108,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $action = StylaUtils::getActionFromUrl();
 
         $this->registerTemplateDir();
-        $request->setControllerName($controller);	//'magazin'
+        $request->setControllerName('magazin');	//'magazin'
         $request->setActionName($action);
 
     }
@@ -131,11 +125,12 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
     public function onGetControllerPathFrontend(Enlight_Event_EventArgs $args){
         $request  = $args->getRequest();
-	$request->getRequestUri();
-        if ($request->getRequestUri() == '/'.$this->_magazin_basedir || strpos($request->getRequestUri(), '/'.$this->_magazin_basedir.'/') !== false)
+        if ($request->getRequestUri() == '/'.$this->_magazin_basedir || strpos($request->getRequestUri(), '/'.$this->_magazin_basedir.'/') !== false){
             return $this->Path() . 'Controllers/Frontend/Magazin.php';
-	else
+        }
+	    else{
             return $this->Path() . 'Controllers/Frontend/StylaApi.php';
+        }
     }
 
     protected function registerTemplateDir(){
