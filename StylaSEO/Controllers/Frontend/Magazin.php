@@ -19,8 +19,7 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         $this->_username    = $config->get('styla_username');
         $this->_source_url  = $config->get('styla_source_url');
         $this->_snippet_url = $config->get('styla_js_url');
-	
-	
+
 	    $this->_base_dir    = $config->get('styla_basedir');
     /*// to submit search
 	$url = trim($_SERVER['REQUEST_URI'], '/');
@@ -38,16 +37,17 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
     }
 
     public function postDispatch(){
-        
+
         $type = $this->_feed_params['type'];
         $js_include = StylaUtils::getJsEmbedCode($this->_username, $this->_snippet_url);
+
         $ret = null;
 
-        if($type != 'search') // for now at least we don't need any metadata coming back for search results
-            $ret = StylaUtils::getRemoteContent($this->_username, $this->_feed_params);
+        if($type != 'search'){// for now at least we don't need any metadata coming back for search results
+            $ret = StylaUtils::getRemoteContent($this->_username, $this->_feed_params, $this->_source_url);
+        }
 
         $custom_page = $this->View()->getAssign('sCustomPage');
-
         if($ret){
             $custom_page['meta_description'] = $ret['meta']['description'];
             $custom_page['page_title'] = $ret['page_title'];
@@ -60,14 +60,14 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
                 $custom_page['meta_og_url'] = $ret['meta']['og']['url'];
                 $custom_page['meta_fb_app_id'] = $ret['meta']['fb_app_id'];
                 $custom_page['author'] = $ret['author'];
-		
-		if(!empty($ret['meta']['og']['image'])){		
-			$meta = (array) new SimpleXMLElement($ret['meta']['og']['image']);
-			$attribs = current($meta);
-			list($width, $height) = getimagesize($attribs['content']);
-			$custom_page['meta_og_image_width'] = $width;
-			$custom_page['meta_og_image_height'] = $height;
-		}
+
+        		if(!empty($ret['meta']['og']['image'])){
+        			$meta = (array) new SimpleXMLElement($ret['meta']['og']['image']);
+        			$attribs = current($meta);
+        			list($width, $height) = getimagesize($attribs['content']);
+        			$custom_page['meta_og_image_width'] = $width;
+        			$custom_page['meta_og_image_height'] = $height;
+        		}
             }
 
             if($type == 'story'){
@@ -75,7 +75,6 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
             }
 
             $this->View()->assign('sContent', '<noscript>'.$ret['noscript_content'].'</noscript>'."\r\n".$js_include."\r\n".'<div id="stylaMagazine"></div>');
-		///$this->View()->assign('sContent', '<noscript>'.$ret['noscript_content'].'</noscript>'."\r\n".$js_include);	
         }
 
         $this->View()->assign('sCustomPage', $custom_page);
