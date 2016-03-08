@@ -2,7 +2,7 @@
 
 class StylaUtils{
 
-    const STYLA_URL = 'http://dev.styla.com/';	//'http://www.amazine.com/';
+    const STYLA_URL = 'http://live.styla.com/';
     const CACHE_TTL = 3600; // Cache expires in 1 hour
     protected static $_username = '';
     protected static $_res = '';
@@ -11,18 +11,14 @@ class StylaUtils{
         if(!$js_url)
                 $js_url = self::STYLA_URL;
 
-        //$url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/embed/'.$username.'.js';
-        //return '<script id="amazineEmbed" type="text/javascript" src="'.$url.'" defer="defer"></script>';
-	$url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/preloader/'.$username.'.js';
-        //return '<script id="stylaMagazine" type="text/javascript" src="'.$url.'" defer="defer"></script>';
-	return '<script type="text/javascript" src="'.$url.'" defer="defer"></script>';
+        $url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/preloader/'.$username.'.js';
+        return '<script id="stylaMagazine" type="text/javascript" src="'.$url.'" async></script>';
     }
 
-    public static function getActionFromUrl($basedir = 'magazin'){
+    public static function getActionFromUrl($basedir = 'magazine'){
         $url = $_SERVER['REQUEST_URI'];
         $action = preg_filter('(/en)?/'.$basedir.'/([^\/]+).*/i', '$2', $url);
-	return $action;        
-	///return empty($action) ? 'index' : $action;
+        return $action;
     }
 
     public static function getParamFromUrl($search){
