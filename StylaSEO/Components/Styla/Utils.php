@@ -12,7 +12,7 @@ class StylaUtils{
             $js_url = self::STYLA_URL;
 
 	    $url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/preloader/'.$username.'.js';
-	    return '<script type="text/javascript" src="'.$url.'" defer="defer"></script>';
+	    return '<script type="text/javascript" src="'.$url.'"></script>';
     }
 
     public static function getActionFromUrl($basedir = 'magazin'){
