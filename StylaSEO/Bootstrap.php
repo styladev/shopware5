@@ -26,11 +26,11 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         return array(
             'version' => $this->getVersion(),
             'label' => $this->getLabel(),
-            'author' => 'BSolut GmbH',
-            'supplier' => 'Styla',
+            'author' => 'Styla GmbH',
+            'supplier' => 'Styla GmbH',
             'description' => 'Generates metadata corresponding to folder structure necessary to support Styla JS embed',
             'copyright' => '',
-            'support' => 'Styla',
+            'support' => 'Styla GmbH',
             'link' => 'http://www.styla.com'
         );
     }
