@@ -14,7 +14,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
     public function __call($name, $value = null) {
         echo "Invalid call"; exit;
     }
-    
+  
 	public function categoriesAction(){
 		$resource = \Shopware\Components\Api\Manager::getResource('category');
 
@@ -24,11 +24,11 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		$filter = $this->Request()->getParam('filter', array());
 
 		$result = $resource->getList($offset, $limit, $filter, $sort);
-		
+
 		$tree = $this->buildCategoryTree($result['data']);
 
 		$res	= json_encode($tree, JSON_PRETTY_PRINT);
-		echo $res; exit;	
+		echo $res; exit;
 
 	}
 
@@ -48,7 +48,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			unset($element['articleCount']);
 			unset($element['childrenCount']);
 			unset($element['parentId']);
-			
+
 		    $branch[] = $element;
 		}
 	    }
@@ -67,21 +67,24 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		//$filter = $this->Request()->getParam('filter', array());
 		$categoryId = $this->Request()->getParam('category', '');
 		$search = $this->Request()->getParam('search', '');
-		
+
 		$term = trim(stripslashes(html_entity_decode($search)));
 		$doSearch = (!$term || strlen($term) < Shopware()->Config()->MinSearchLenght) ? false : true;
 
 		if($categoryId > 0 && $doSearch){
 			$sql = "SELECT a.id, a.name
 				FROM `s_articles` a
-				LEFT JOIN `s_articles_categories_ro` acr ON acr.articleID = a.id				
-				LEFT JOIN `s_categories` c ON acr.articleID = c.id				
+				LEFT JOIN `s_articles_categories_ro` acr ON acr.articleID = a.id
+				LEFT JOIN `s_categories` c ON acr.articleID = c.id
 				LEFT JOIN `s_articles_supplier` asp ON a.supplierID = asp.id
-				WHERE acr.categoryID = $categoryId 
-					AND (a.name LIKE '%".$term."%' 
-					OR a.description LIKE '%".$term."%' 
+        LEFT JOIN `s_articles_details` sad ON sad.articleID = a.id
+				WHERE acr.categoryID = $categoryId
+					AND (a.name LIKE '%".$term."%'
+          OR a.id LIKE '%".$term."%'
+					OR a.description LIKE '%".$term."%'
 					OR asp.name LIKE '%".$term."%'
-					OR c.description LIKE '%".$term."%')
+					OR c.description LIKE '%".$term."%'
+          OR sad.ordernumber LIKE '%".$term."%')
 				GROUP BY a.id";
 
 			$filterArticles = Shopware()->Db()->fetchAll($sql);
@@ -96,7 +99,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 
 			$categoryArticles = Shopware()->Db()->fetchAll($sql);
 			$articleIds = array_column($categoryArticles, 'id');
-	
+
 			//$categoryArticles = Shopware()->Modules()->Articles()->sGetArticlesByCategory($categoryId);
 			//$articleIds = array_column($categoryArticles['sArticles'], 'articleID');
 			//echo '<pre>'; print_r($categoryArticles); exit;
@@ -111,7 +114,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			$criteria = $this->get('shopware_search.store_front_criteria_factory')->createAjaxSearchCriteria($this->Request(), $context);
 
 			$result = $this->get('shopware_search.product_search')->search($criteria, $context);
-			
+
 				$articles = array();
 				foreach ($result->getProducts() as $product) {
 				    $article = $this->get('legacy_struct_converter')->convertListProductStruct($product);
@@ -134,10 +137,13 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 				LEFT JOIN `s_articles_supplier` asp ON a.supplierID = asp.id
 				LEFT JOIN `s_articles_categories_ro` acr ON acr.articleID = a.id
 				LEFT JOIN `s_categories` c ON acr.articleID = c.id
-				WHERE a.name LIKE '%".$term."%' 
-					OR a.description LIKE '%".$term."%' 
+        LEFT JOIN `s_articles_details` sad ON sad.articleID = a.id
+				WHERE a.name LIKE '%".$term."%'
+          OR a.id LIKE '%".$term."%'
+					OR a.description LIKE '%".$term."%'
 					OR asp.name LIKE '%".$term."%'
 					OR c.description LIKE '%".$term."%'
+          OR sad.ordernumber LIKE '%".$term."%'
 				GROUP BY a.id";
 
 			$searchArticles = Shopware()->Db()->fetchAll($sql);
@@ -145,7 +151,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			//echo '<pre>'; print_r($filter['id']); exit;
 		}
 
-	
+
 		//echo '<pre>'; print_r($filter); exit;
 		$result = $resource->getList($offset, $limit, $filter, $sort, array(
 		    'language' => $this->Request()->getParam('language')
@@ -158,19 +164,19 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			$imgRes = $articles->getArticleListingCover($value['id']);
 
 			$res[] = array(
-					'shopId' => $value['id'], 
-					'caption' => htmlentities($value['name']), 
+					'shopId' => $value['id'],
+					'caption' => htmlentities($value['name']),
 					'image' => $imgRes['src']['original'],
 					'imageSmall' => $imgRes['src'][0],
-					'pageUrl' => $this->getLinksOfProduct($value['id'], htmlentities($value['name'])), 
+					'pageUrl' => $this->getLinksOfProduct($value['id'], htmlentities($value['name'])),
 					'shop' => ($value['active'] ? 'true' : 'false'));
 		}
-		//echo '<pre>'; print_r($res); exit;	
+		//echo '<pre>'; print_r($res); exit;
 		$res	= json_encode($res, JSON_PRETTY_PRINT);
 		echo $res; exit;
 
 	}
-	
+
 	//	copied from /engine/Shopware/Core/sArticles.php
 	private function getLinksOfProduct($productId, $productName, $categoryId = null){
 		$config = Shopware()->Container()->get('config');
@@ -180,7 +186,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		if($categoryId) {
 			$detail .= '&sCategory=' . $categoryId;
 		}
-		
+
 		$rewrite = Shopware()->Modules()->Core()->sRewriteLink($detail, $productName);
 		return $rewrite;
 	}
@@ -202,7 +208,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		        'considerTaxInput' => $this->Request()->getParam('considerTaxInput')
 		    ));
 		}
-	
+
 		$taxInclPrice = $article['mainDetail']['prices'][0]['price'] + ($article['mainDetail']['prices'][0]['price'] * ($article['tax']['tax'] / 100));
 		setlocale(LC_MONETARY,"de_DE");
 		$priceFormatted = money_format("%.2n", $taxInclPrice);
@@ -213,13 +219,13 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			$oldPriceFormatted = money_format("%.2n", $taxInclOldPrice);
 		}
 		$res = array('id' => $article['mainDetail']['number'], //$article['id']
-				'name' => htmlentities($article['name']), 
+				'name' => htmlentities($article['name']),
 				'saleable' => ($article['active'] ? 'true' : 'false'),
-				'price' => $priceFormatted, 
-				'priceTemplate' => '# {price} &euro;', 
-				'oldPrice' => $oldPriceFormatted, 
-				'minqty' => $article['mainDetail']['minPurchase'], 
-				'maxqty' => ($article['mainDetail']['maxPurchase'] > 0) ? $article['mainDetail']['maxPurchase'] : 100, 
+				'price' => $priceFormatted,
+				'priceTemplate' => '# {price} &euro;',
+				'oldPrice' => $oldPriceFormatted,
+				'minqty' => $article['mainDetail']['minPurchase'],
+				'maxqty' => ($article['mainDetail']['maxPurchase'] > 0) ? $article['mainDetail']['maxPurchase'] : 100,
 				'tax' => array(
 					'rate' => $article['tax']['tax'], 'label' => $article['tax']['name'], 'taxIncluded' => 'true', 'showLabel' => 'true'
 				),
@@ -232,12 +238,12 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 						'id' => $variant['id'],
 						'label' => htmlentities($variant['name'])
 						);
-			
+
 			foreach($article['mainDetail']['configuratorOptions'] as $m_option){
 				if($variant['id'] == $m_option['groupId']){
 					//$rr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
 					$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
-						'id' => $m_option['id'], 
+						'id' => $m_option['id'],
 						'label' => htmlentities($m_option['name']),
 						'price' => $priceFormatted,
 						//'products' => array_merge($rr, array($article['mainDetail']['number']))
@@ -252,7 +258,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 					if($variant['id'] == $m_option['groupId']){
 						$rrr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
 						$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
-							'id' => $m_option['id'], 
+							'id' => $m_option['id'],
 							'label' => htmlentities($m_option['name']),
 							'price' => $priceFormatted,
 							//'products' => array_merge($rrr, array($configuration['number']))
@@ -261,7 +267,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 					}
 				}
 			}
-			
+
 		}
 
 		//echo '<pre>'; print_r($res); exit;
@@ -280,7 +286,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		    'basketInfoMessage',
 		    $this->getInstockInfo($orderNumber, $quantity)
 		);
-		
+
 		$basket = Shopware()->Modules()->Basket();
 		$basket->sAddArticle($orderNumber, $quantity);
 
@@ -288,10 +294,10 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		//$this->forward('cartUpdate');
 		$this->ajaxCartAction();
 	}
-	
+
 	public function cartUpdateAction(){
 
 		$this->ajaxCartAction();
 	}
-	
+
 }
