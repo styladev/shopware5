@@ -14,7 +14,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
     public function __call($name, $value = null) {
         echo "Invalid call"; exit;
     }
-  
+
 	public function categoriesAction(){
 		$resource = \Shopware\Components\Api\Manager::getResource('category');
 
