@@ -28,7 +28,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
             'label' => $this->getLabel(),
             'author' => 'Styla GmbH',
             'supplier' => 'Styla GmbH',
-            'description' => 'Generates metadata corresponding to folder structure necessary to support Styla JS embed',
+            'description' => 'Generates magazine wildcart route and product api',
             'copyright' => '',
             'support' => 'Styla GmbH',
             'link' => 'http://www.styla.com'
@@ -66,7 +66,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $form->setElement('text', 'styla_basedir', array(
             'label' => 'Styla Base Folder',
             'required' => true,
-            'value' => 'magazin',
+            'value' => 'magazine',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
     }
@@ -86,11 +86,12 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     public function onPreDispatch(Enlight_Controller_EventArgs $args){
 
         $request  = $args->getRequest();
+        $url = strtok($request->getRequestUri(),'?');
 
         $this->_styla_username = $this->Config()->get('styla_username');
         $this->_magazin_basedir = $this->Config()->get('styla_basedir', 'magazin');
 
-        if( ($request->getRequestUri() == '/'.$this->_magazin_basedir || strpos($request->getRequestUri(), '/'.$this->_magazin_basedir.'/') !== false) ) {
+        if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
 		    $controller	= 'magazin';
         } else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
 		    $controller	= 'stylaapi';
@@ -124,8 +125,9 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     }
 
     public function onGetControllerPathFrontend(Enlight_Event_EventArgs $args){
-        $request  = $args->getRequest();
-        if ($request->getRequestUri() == '/'.$this->_magazin_basedir || strpos($request->getRequestUri(), '/'.$this->_magazin_basedir.'/') !== false){
+        $request = $args->getRequest();
+        $url = strtok($request->getRequestUri(),'?');
+        if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
             return $this->Path() . 'Controllers/Frontend/Magazin.php';
         }
 	    else{

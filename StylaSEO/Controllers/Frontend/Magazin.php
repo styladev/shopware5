@@ -126,7 +126,7 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
 
     public function __call($name, $value = null) {
-        $url = trim($_SERVER['REQUEST_URI'], '/');
+        $url = trim(strtok($_SERVER["REQUEST_URI"],'?'), '/');
         $arr = explode('/', $url);
         if($arr[0] == $this->_base_dir && !empty($arr[1]) && !in_array($arr[1], array('search','story','user','tag','category','magazine',$this->_username))){
             StylaCurl::call($this->_source_url, array(), array('keyword' => $arr[1]));
