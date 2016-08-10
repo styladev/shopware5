@@ -1,3 +1,6 @@
+### v5.0.4 2016-08-10
+* Improved meta header implementation
+
 ### v5.0.3 2016-07-29 
 * Allow query parameters on magazine pages
 
