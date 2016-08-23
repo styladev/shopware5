@@ -1,3 +1,6 @@
+### v5.0.5 2016-08-23
+* Allow different domains per store view
+
 ### v5.0.4 2016-08-10
 * Improved meta header implementation
 

@@ -1,7 +1,7 @@
-# Styla SEO Enhancements Shopware Module (v5.0.4) 
+# Styla SEO Enhancements Shopware Module (v5.0.5) 
 ## Installation How-to
 #### Author: Mark Mulder (BSolut GmbH)
-#### Last updated: 15.12.2014
+#### Last updated: 23.08.2016
 
 --
 

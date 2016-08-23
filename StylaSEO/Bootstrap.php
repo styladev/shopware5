@@ -18,7 +18,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
     public function getVersion()
     {
-        return '5.0.4';
+        return '5.0.5';
     }
 
     public function getInfo()
@@ -48,7 +48,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
         // Amazine settings
         $form->setElement('text', 'styla_username', array(
-            'label' => 'Styla Username',
+            'label' => 'Styla Magazine ID',
             'required' => true,
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
@@ -90,7 +90,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $url = strtok($request->getRequestUri(),'?');
 
         $this->_styla_username = $this->Config()->get('styla_username');
-        $this->_magazin_basedir = $this->Config()->get('styla_basedir', 'magazin');
+        $this->_magazin_basedir = $this->Config()->get('styla_basedir', 'magazine');
 
         if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
 		    $controller	= 'magazin';
