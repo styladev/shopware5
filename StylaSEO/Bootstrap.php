@@ -50,6 +50,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $form->setElement('text', 'styla_username', array(
             'label' => 'Styla Username',
             'required' => true,
+            'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_source_url', array(
             'label' => 'Styla SEO Source URL',
