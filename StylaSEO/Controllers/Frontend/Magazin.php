@@ -45,31 +45,6 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         if($ret){
             $custom_page['head_content'] = $ret['head_content'];
 
-            $custom_page['meta_description'] = $ret['meta']['description'];
-            $custom_page['page_title'] = $ret['page_title'];
-            $custom_page['canonical_link'] = $ret['canonical_link'];
-
-            if($type == 'user' || $type == 'magazine' || $type == 'story'){
-                $custom_page['meta_og_type'] = $ret['meta']['og']['type'];
-                $custom_page['meta_og_title'] = $ret['meta']['og']['title'];
-                $custom_page['meta_og_image'] = $ret['meta']['og']['image'];
-                $custom_page['meta_og_url'] = $ret['meta']['og']['url'];
-                $custom_page['meta_fb_app_id'] = $ret['meta']['fb_app_id'];
-                $custom_page['author'] = $ret['author'];
-
-        		if(!empty($ret['meta']['og']['image'])){
-        			$meta = (array) new SimpleXMLElement($ret['meta']['og']['image']);
-        			$attribs = current($meta);
-        			list($width, $height) = getimagesize($attribs['content']);
-        			$custom_page['meta_og_image_width'] = $width;
-        			$custom_page['meta_og_image_height'] = $height;
-        		}
-            }
-
-            if($type == 'story'){
-                $custom_page['meta_keywords'] = $ret['meta']['keywords'];
-            }
-
             $this->View()->assign('sContent', $ret['noscript_content']."\r\n".$js_include."\r\n".'<div id="stylaMagazine"></div>');
         }
 
