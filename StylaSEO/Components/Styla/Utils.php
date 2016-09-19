@@ -42,14 +42,7 @@ class StylaUtils{
         $type = $params['type'];
         self::$_username = $username;
 
-        if($type == 'tag')
-            $url = $src_url.'user/'.$username.'/tag/'.$params['tagname'];
-        elseif($type == 'story')
-            $url = $src_url.'story/'.$params['storyname'];
-        elseif($type == 'user')
-            $url = $src_url.'user/'.$params['username'];
-        else
-            $url = $src_url.'user/'.$username; // magazine default
+        $url = $src_url.'clients/'.$username.'?url='.$params['route'];
 
         $cache_key = self::getCacheKey($url);
 
@@ -86,44 +79,20 @@ class StylaUtils{
 
             $ret = array();
             $ret['meta'] = array();
+            $json = json_decode(self::$_res);
 
-            /** DEFAULT SET OF METADATA  */
-            // Noscript content
-            if(preg_match('/<noscript>(.*)<\/noscript>/is', self::$_res, $matches)){
-                $ret['noscript_content'] = $matches[1];
-            }
+            if(isset($json->status) && $json->status == 200) {
+                // head content
+                if(isset($json->html->head)){
+                    $ret['head_content'] = $json->html->head;
+                }
 
-            // Meta description
-            $ret['meta']['description'] = self::_getMetadataValueByName('description');
-
-            // Page title
-            if(preg_match('/<title>(.*)<\/title>/is', self::$_res, $matches)){
-                $ret['page_title'] = $matches[1];
-            }
-
-            // Canonical link
-            if(preg_match('/(<link rel="canonical"[^>]+>)/is', self::$_res, $matches)){
-                $ret['canonical_link'] = $matches[1];
-            }
-
-            if($type == 'user' || $type == 'magazine' || $type == 'story'){
-                // Facebook & opengraph tags
-                $ret['meta']['fb_app_id'] = self::_getMetadataTagsByProperty('fb:app_id');
-                $ret['meta']['og'] = array();
-                $ret['meta']['og']['type'] = self::_getMetadataTagsByProperty('og:type');
-                $ret['meta']['og']['title'] = self::_getMetadataTagsByProperty('og:title');
-                $ret['meta']['og']['image'] = self::_getMetadataTagsByProperty('og:image');
-                $ret['meta']['og']['url'] = self::_getMetadataTagsByProperty('og:url');
-                // Author link
-                if(preg_match('/(<link rel="author"[^>]+>)/is', self::$_res, $matches)){
-                    $ret['author'] = $matches[1];
+                // Noscript content
+                if(isset($json->html->body)){
+                    $ret['noscript_content'] = $json->html->body;
                 }
             }
 
-            if($type == 'story'){
-                // Meta keywords
-                $ret['meta']['keywords'] = self::_getMetadataValueByProperty('keywords');
-            }
             return $ret;
 
         }catch (Exception $e){

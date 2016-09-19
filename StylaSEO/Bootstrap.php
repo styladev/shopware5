@@ -18,7 +18,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
     public function getVersion()
     {
-        return '5.0.5';
+        return '5.1.0';
     }
 
     public function getInfo()
@@ -52,14 +52,14 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
             'required' => true,
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
-        $form->setElement('text', 'styla_source_url', array(
-            'label' => 'Styla SEO Source URL',
+        $form->setElement('text', 'styla_seo_url', array(
+            'label' => 'Styla SEO Server URL',
             'required' => true,
-            'value' => 'http://live.styla.com/',
+            'value' => 'http://seo.styla.com/',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
-        $form->setElement('text', 'styla_js_url', array(
-            'label' => 'Styla JS Snippet URL',
+        $form->setElement('text', 'styla_api_url', array(
+            'label' => 'Styla API Server URL',
             'required' => true,
             'value' => 'http://live.styla.com/',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
