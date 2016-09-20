@@ -17,16 +17,10 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
         $config = Enlight_Application::Instance()->Bootstrap()->Config();
         $this->_username    = $config->get('styla_username');
-        $this->_source_url  = $config->get('styla_source_url');
-        $this->_snippet_url = $config->get('styla_js_url');
+        $this->_source_url  = $config->get('styla_seo_url');
+        $this->_snippet_url = $config->get('styla_api_url');
 
 	    $this->_base_dir    = $config->get('styla_basedir');
-    /*// to submit search
-	$url = trim($_SERVER['REQUEST_URI'], '/');
-	$arr = explode('/', $url);
-	if($arr[0] == $this->_base_dir && !empty($arr[1]) && !in_array($arr[1], array('search','story','user','tag','category','magazine',$this->_username))){
-		$this->report($arr[1]);
-	}*/
 
         $this->_source_url = rtrim($this->_source_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
         $this->_snippet_url = rtrim($this->_snippet_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
@@ -49,32 +43,9 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
         $custom_page = $this->View()->getAssign('sCustomPage');
         if($ret){
-            $custom_page['meta_description'] = $ret['meta']['description'];
-            $custom_page['page_title'] = $ret['page_title'];
-            $custom_page['canonical_link'] = $ret['canonical_link'];
+            $custom_page['head_content'] = $ret['head_content'];
 
-            if($type == 'user' || $type == 'magazine' || $type == 'story'){
-                $custom_page['meta_og_type'] = $ret['meta']['og']['type'];
-                $custom_page['meta_og_title'] = $ret['meta']['og']['title'];
-                $custom_page['meta_og_image'] = $ret['meta']['og']['image'];
-                $custom_page['meta_og_url'] = $ret['meta']['og']['url'];
-                $custom_page['meta_fb_app_id'] = $ret['meta']['fb_app_id'];
-                $custom_page['author'] = $ret['author'];
-
-        		if(!empty($ret['meta']['og']['image'])){
-        			$meta = (array) new SimpleXMLElement($ret['meta']['og']['image']);
-        			$attribs = current($meta);
-        			list($width, $height) = getimagesize($attribs['content']);
-        			$custom_page['meta_og_image_width'] = $width;
-        			$custom_page['meta_og_image_height'] = $height;
-        		}
-            }
-
-            if($type == 'story'){
-                $custom_page['meta_keywords'] = $ret['meta']['keywords'];
-            }
-
-            $this->View()->assign('sContent', '<noscript>'.$ret['noscript_content'].'</noscript>'."\r\n".$js_include."\r\n".'<div id="stylaMagazine"></div>');
+            $this->View()->assign('sContent', $ret['noscript_content']."\r\n".$js_include."\r\n".'<div id="stylaMagazine"></div>');
         }
 
         $this->View()->assign('sCustomPage', $custom_page);
@@ -82,7 +53,7 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
     }
 
     public function indexAction(){
-    	$this->_feed_params = array('type' => 'magazine');
+    	$this->_feed_params = array('type' => 'magazine', 'route' => '/');
     }
 
     public function tagAction(){
@@ -98,7 +69,7 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         if(!$storyname){
             $this->redirect('/');
         }
-        $this->_feed_params = array('type' => 'story', 'storyname' => $storyname);
+        $this->_feed_params = array('type' => 'story', 'storyname' => $storyname, 'route' => 'story/'.$storyname);
     }
 
     public function userAction(){
@@ -106,8 +77,7 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         if(!$username){
             $this->redirect('/');
         }
-        $this->_feed_params = array('type' => 'user', 'username' => $username);
-
+        $this->_feed_params = array('type' => 'user', 'username' => $username, 'route' => 'user/'.$username);
     }
 
     public function searchAction(){
@@ -115,15 +85,8 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         if(!$searchterm){
             $this->redirect('/');
         }
-        $this->_feed_params = array('type' => 'search', 'searchterm' => $searchterm);
-
+        $this->_feed_params = array('type' => 'search', 'searchterm' => $searchterm, 'route' => 'search/'.$searchterm);
     }
-
-	/*public function report($searchKeyword=null){
-		StylaCurl::call($this->_source_url, array(), array('keyword' => $searchKeyword));
-		$this->redirect('/'.$this->_base_dir);
-	}*/
-
 
     public function __call($name, $value = null) {
         $url = trim(strtok($_SERVER["REQUEST_URI"],'?'), '/');
