@@ -6,27 +6,24 @@
 
 --
 
-1. Place the *StylaSEO* folder at the following location of your Shopware installaton: engine/Shopware/Plugins/Local/Frontend
+- Place the *StylaSEO* folder at the following location of your Shopware installaton: `engine/Shopware/Plugins/Local/Frontend`
 
-2. Once the code is in place, access your Shopware administration page. The Styla SEO Enhancements Shopware module can be configured and activated under **Configuration -> Plugin Manager -> Local Extensions**.
+- Once the code is in place, access your Shopware administration page. The Styla SEO Enhancements Shopware module can be configured and activated under **Configuration -> Plugin Manager -> Installed**.
 
-3. Click on the Pencil (edit) icon to edit the plugin settings. Enter your username at **Amazine/Styla Username** (i.e. the name that appears for your magazine page at http://amazine.com/user/[username].
+- Click on the Pencil (edit) icon to edit the plugin settings:
+    - **Styla Magazine ID**: Your Styla username which is provided to you by your Styla account manager.
+    - **Styla SEO Server URL** _(default: http://seo.styla.com/)_: Server that provides SEO information for your magazine content. (**IMPORTANT:** Do not modify this unless approved by Styla)
+    - **Styla API Server URL** _(default: http://live.styla.com/)_: Server that provided the necessary scripts and styles for your magazine. (**IMPORTANT:** Do not modify this unless approved by Styla)
+    - **Styla Base Folder** _(default: magazine)_: Path to your main magazine page. Your magazine will become available at `/[Styla Base Folder]` (e.g. `/magazine`). (**IMPORTANT:** Before changing, make sure to contact you account manager and provide him/her the new magazine path)
 
-4. If you do not wish to use /magazin as your base folder for displaying the Styla content, please enter a new path under **Amazine/Styla Base Folder** (IMPORTANT: do not modify this unless it's approved by Styla, since the Javascript snippet relies on this base directory name).
+If everything is set up correctly the following pages will be accessible:
 
-5. If all is working, the pages will be accessible at :
+    - **Main magazine:** http://[yourwebsite.com]/[Styla Base Folder]/
 
-    - **http://[yourwebsite.com]/magazin/**
-    (Default feed, as per http://amazine.com/user/[your_username])
+    - **Tag:** http://[yourwebsite.com]/[Styla Base Folder]/tag/[tagname]
 
-    - **http://[yourwebsite.com]/magazin/tag/[tagname]**
-    (Products by tag view, as per http://amazine.com/user/[username]/tag/[tagname])
+    - **Story:** http://[yourwebsite.com]/[Styla Base Folder]/story/[storyname]
 
-    - **http://[yourwebsite.com]/magazin/story/[storyname]**
-    (Story view, as per http://amazine.com/user/[username]/story/[storyname])
+    - **Author:** http://[yourwebsite.com]/[Styla Base Folder]/user/[username]
 
-    - **http://[yourwebsite.com]/magazin/user/[username]**
-    (User feed, as per http://amazine.com/user/[username])
-
-    - **http://[yourwebsite.com]/magazin/search/[searchterm]**
-    (Search results, as per http://amazine.com/search/[searchterm])
+    - **Search:** http://[yourwebsite.com]/[Styla Base Folder]/search/[searchterm]
