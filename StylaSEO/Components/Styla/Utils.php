@@ -98,7 +98,6 @@ class StylaUtils{
                         // erase title and description from html head because duplicated
                         $titleRegex = '/<title>(.|\r\n)*?<\/title>/i';
                         $descriptionContent = array();
-                        // $regexDescription = '/<meta name="description"(.|\r\n)*>/i';
                         $descriptionRegex = '/<meta name="description" content="([^\"]*)">/i';
                         $description = preg_match($descriptionRegex, $ret['head_content'], $descriptionContent);
                         $descriptionContent = $descriptionContent[1];
