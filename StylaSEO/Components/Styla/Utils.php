@@ -11,6 +11,7 @@ class StylaUtils{
         if(!$js_url)
             $js_url = self::STYLA_URL;
 
+
 	    $url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/preloader/'.$username.'.js';
 	    return '<script type="text/javascript" src="'.$url.'"></script>';
     }
@@ -31,7 +32,13 @@ class StylaUtils{
         return rtrim($ret,'/');
     }
 
-    public static function getRemoteContent($username, $params, $src_url = null){
+    public static function getQueryFromUrl(){
+        $url = parse_url($_SERVER['REQUEST_URI']);
+        $query = $url['query'];
+        return $query;
+    }
+
+    public static function getRemoteContent($username, $params, $query_params, $src_url = null){
 
         $cache = Shopware()->Cache();
         $config = Shopware()->Config();
@@ -41,14 +48,15 @@ class StylaUtils{
 
         $type = $params['type'];
         self::$_username = $username;
-
-        $url = $src_url.'clients/'.$username.'?url='.$params['route'];
+        if($query_params)
+            $query_params = '?'.$query_params;
+        $url = $src_url.'clients/'.$username.'?url='.$params['route'].$query_params;
 
         $cache_key = self::getCacheKey($url);
 
         if (!empty($config->caching)) {
             if (!$cache->test($cache_key)) {
-                $arr = self::_loadRemoteContent($url, $type);
+                $arr = self::_loadRemoteContent($url, $query_params, $type);
                 if(!$arr)
                     return;
 
@@ -64,7 +72,7 @@ class StylaUtils{
 
     }
 
-    private static function _loadRemoteContent($url, $type = null){
+    private static function _loadRemoteContent($url, $query_params, $type = null){
         $curl = new StylaCurl();
 
         $curl_opts = array(
@@ -81,18 +89,31 @@ class StylaUtils{
             $ret['meta'] = array();
             $json = json_decode(self::$_res);
 
-            if(isset($json->status) && $json->status == 200) {
-                // head content
-                if(isset($json->html->head)){
-                    $ret['head_content'] = $json->html->head;
-                }
-
-                // Noscript content
-                if(isset($json->html->body)){
-                    $ret['noscript_content'] = $json->html->body;
+            if(isset($json->status)) {
+                $ret['status_code'] = $json->status;
+                if ($json->status == 200) {
+                    // head content
+                    if(isset($json->html->head)){
+                        $ret['head_content'] = $json->html->head;
+                        // erase title and description from html head because duplicated
+                        $titleRegex = '/<title>(.|\r\n)*?<\/title>/i';
+                        $descriptionContent = array();
+                        // $regexDescription = '/<meta name="description"(.|\r\n)*>/i';
+                        $descriptionRegex = '/<meta name="description" content="([^\"]*)">/i';
+                        $description = preg_match($descriptionRegex, $ret['head_content'], $descriptionContent);
+                        $descriptionContent = $descriptionContent[1];
+                        $ret['head_content'] = preg_replace($titleRegex, "", $ret['head_content']);
+                        $ret['head_content'] = preg_replace($descriptionRegex, "", $ret['head_content']);
+                    }
+                    // Noscript content
+                    if(isset($json->html->body)){
+                        $ret['noscript_content'] = $json->html->body;
+                    }
+                    $ret['page_title'] = $json->tags[0]->content;
+                    $ret['meta_description'] = $descriptionContent;
+                    $ret['query_params'] = $query_params;
                 }
             }
-
             return $ret;
 
         }catch (Exception $e){
@@ -103,7 +124,6 @@ class StylaUtils{
 
     public static function getCacheKey($text){
         $de_chars = array('ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'ß' => 'ss');
-
         $text = preg_replace('/https?:\/\/(.+)/', '$1', $text); // remove protocol from the url
         $text = urldecode($text); //decode
         $text = str_replace(array_keys($de_chars), $de_chars, strtolower($text)); // replace German special chars with expanded version
@@ -113,32 +133,5 @@ class StylaUtils{
         return $text;
     }
 
-    private static function _getMetadataValueByName($name){
-        return self::_getMetadataValue('name', $name);
-    }
-
-    private static function _getMetadataValueByProperty($property){
-        return self::_getMetadataValue('property', $property);
-    }
-
-    private static function _getMetadataTagsByProperty($property){
-        return self::_getMetadataTags('property', $property);
-    }
-
-    private static function _getMetadataValue($type, $key){
-        if(preg_match('/<meta [^>]*'.$type.'="'.$key.'" (.*?)content="([^"]+)"\W?\/>/is', self::$_res, $matches)){
-            return $matches[2];
-        }
-    }
-
-    private static function _getMetadataTags($type, $key){
-        if(preg_match_all('/(<meta [^>]*'.$type.'="'.$key.'" (.*?)content="([^"]+)"\W?\/>)+/is', self::$_res, $matches)){
-            $ret = $matches[0];
-            if(!is_array($ret))
-                return false;
-
-            return implode("\r\n", $ret);
-        }
-    }
 
 }
