@@ -1,3 +1,7 @@
+### v5.2.0 2016-10-24
+* Added SEO Pagination
+* Added SEO Status Code
+
 ### v5.1.0 2016-09-20
 * Added SEO API support
 

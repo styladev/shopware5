@@ -18,7 +18,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
     public function getVersion()
     {
-        return '5.1.0';
+        return '5.2.0';
     }
 
     public function getInfo()
@@ -39,7 +39,8 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     public function install(){
         $this->registerEvents();
         $this->createConfigForm();
-	$this->registerController('Frontend', 'StylaApi');
+        $this->registerController('Frontend', 'stylaApi');
+        $this->registerController('Frontend', 'magazin');
         return true;
     }
 
@@ -76,7 +77,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->subscribeEvent('Enlight_Controller_Front_PreDispatch', 'onPreDispatch');
         $this->subscribeEvent('Enlight_Controller_Front_PostDispatch', 'onPostDispatch');
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_Magazin', 'onGetControllerPathFrontend');
-	    $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaApi', 'onGetControllerPathFrontend');
+        $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaApi', 'onGetControllerPathFrontend');
 
         return array(
             'success' => true,

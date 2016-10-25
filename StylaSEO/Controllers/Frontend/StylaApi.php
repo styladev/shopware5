@@ -5,9 +5,9 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 
 
     public function indexAction(){
-	//$this->View()->setScope(Enlight_Template_Manager::SCOPE_PARENT);
-        //$this->View()->extendsTemplate('frontend/custom/index.tpl');
-        //$this->View()->loadTemplate('frontend/stylaapi/index.tpl');
+	  //$this->View()->setScope(Enlight_Template_Manager::SCOPE_PARENT);
+    //$this->View()->extendsTemplate('frontend/custom/index.tpl');
+    //$this->View()->loadTemplate('frontend/stylaapi/index.tpl');
 	$this->View()->assign('someNumber', 5);
     }
 
@@ -100,37 +100,9 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			$categoryArticles = Shopware()->Db()->fetchAll($sql);
 			$articleIds = array_column($categoryArticles, 'id');
 
-			//$categoryArticles = Shopware()->Modules()->Articles()->sGetArticlesByCategory($categoryId);
-			//$articleIds = array_column($categoryArticles['sArticles'], 'articleID');
-			//echo '<pre>'; print_r($categoryArticles); exit;
 			$filter['id'] = $articleIds;
-			//echo '<pre>'; print_r($filter['id']); exit;
 
 		} else if($doSearch){
-			//$filter['name'] = '%'.$search.'%';
-
-			/*$context  = $this->get('shopware_storefront.context_service')->getProductContext();
-
-			$criteria = $this->get('shopware_search.store_front_criteria_factory')->createAjaxSearchCriteria($this->Request(), $context);
-
-			$result = $this->get('shopware_search.product_search')->search($criteria, $context);
-
-				$articles = array();
-				foreach ($result->getProducts() as $product) {
-				    $article = $this->get('legacy_struct_converter')->convertListProductStruct($product);
-
-				    if ($article['sVoteAverange']['averange']) {
-					$article['sVoteAverange']['averange'] /= 2;
-				    }
-
-				    $article['link'] = $this->Front()->Router()->assemble(array(
-					'controller' => 'detail',
-					'sArticle' => $product->getId(),
-					'title' => $product->getName()
-				    ));
-				    $article['name'] = $product->getName();
-				    $articles[] = $article;
-				}*/
 
 			$sql = "SELECT a.id, a.name
 				FROM `s_articles` a
@@ -229,10 +201,8 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 				'tax' => array(
 					'rate' => $article['tax']['tax'], 'label' => $article['tax']['name'], 'taxIncluded' => 'true', 'showLabel' => 'true'
 				),
-				//'attributes' => array()
 			);
 
-		//echo '<pre>'; print_r($article); exit;
 		foreach($article['configuratorSet']['groups'] as $variant) {
 			$res['attributes'][ $variant['id'] ] =  array(
 						'id' => $variant['id'],
@@ -270,7 +240,6 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 
 		}
 
-		//echo '<pre>'; print_r($res); exit;
 		$res	= json_encode($res, JSON_PRETTY_PRINT);
 		echo $res; exit;
 
@@ -290,8 +259,6 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		$basket = Shopware()->Modules()->Basket();
 		$basket->sAddArticle($orderNumber, $quantity);
 
-        	//$this->forward('ajaxCart');
-		//$this->forward('cartUpdate');
 		$this->ajaxCartAction();
 	}
 
