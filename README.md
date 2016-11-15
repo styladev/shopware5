@@ -42,4 +42,4 @@ The easiest way to add opengraph tags is to add the block in the base header.tpl
     {block name='frontend_index_header_meta_tags_opengraph'}{/block}
     ```
     
-    ![Add opengraph tags block](/readme/readme_opengraph_tags.png)
+    ![Add opengraph tags block](/readme/readme_meta_tags_opengraph.png)
