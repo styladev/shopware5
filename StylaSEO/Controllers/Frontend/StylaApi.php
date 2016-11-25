@@ -234,7 +234,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 							'label' => htmlentities($m_option['name']),
 							'price' => $priceFormatted,
 							//'products' => array_merge($rrr, array($configuration['number']))
-							'products' => array_merge($rrr, array(0 => array('id' => $configuration['number'], $saleable)))
+							'products' => array_merge($rrr, array(0 => array('id' => $configuration['number'], 'saleable' => $saleable)))
 						);
 					}
 				}
