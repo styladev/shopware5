@@ -192,7 +192,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		}
 		$res = array('id' => $article['mainDetail']['number'], //$article['id']
 				'name' => htmlentities($article['name']),
-				'saleable' => ($article['active'] ? 'true' : 'false'),
+				'saleable' => ($article['active'] && $article['mainDetail']['inStock'] > 0) ? 'true' : 'false',
 				'price' => $priceFormatted,
 				'priceTemplate' => '# {price} &euro;',
 				'oldPrice' => $oldPriceFormatted,
@@ -212,12 +212,13 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			foreach($article['mainDetail']['configuratorOptions'] as $m_option){
 				if($variant['id'] == $m_option['groupId']){
 					//$rr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
+					$saleable = ($article['mainDetail']['inStock'] > 0) ? 'true' : 'false';
 					$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
 						'id' => $m_option['id'],
 						'label' => htmlentities($m_option['name']),
 						'price' => $priceFormatted,
 						//'products' => array_merge($rr, array($article['mainDetail']['number']))
-						'products' => array( 0 => array('id' => $article['mainDetail']['number'], 'saleable' => 'true'))
+						'products' => array( 0 => array('id' => $article['mainDetail']['number'], 'saleable' => $saleable))
 					);
 				}
 			}
@@ -227,12 +228,13 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 				foreach($configuration['configuratorOptions'] as $m_option){
 					if($variant['id'] == $m_option['groupId']){
 						$rrr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
+						$saleable = ($configuration['inStock'] > 0) ? 'true' : 'false';
 						$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
 							'id' => $m_option['id'],
 							'label' => htmlentities($m_option['name']),
 							'price' => $priceFormatted,
 							//'products' => array_merge($rrr, array($configuration['number']))
-							'products' => array_merge($rrr, array(0 => array('id' => $configuration['number'], 'saleable' => 'true')))
+							'products' => array_merge($rrr, array(0 => array('id' => $configuration['number'], $saleable)))
 						);
 					}
 				}
