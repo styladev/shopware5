@@ -1,3 +1,6 @@
+### v5.2.1 2016-11-29
+* Saleable fix for variants
+
 ### v5.2.0 2016-10-24
 * Added SEO Pagination
 * Added SEO Status Code

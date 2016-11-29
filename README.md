@@ -1,7 +1,7 @@
-# Styla SEO Enhancements Shopware Module (v5.2.0)
+# Styla SEO Enhancements Shopware Module (v5.2.1)
 #### Author: Mark Mulder (BSolut GmbH)
 #### Contributor: Sebastian Sachtleben, Christian Korndoerfer, Roberto Solís
-#### Last updated: 24.10.2016
+#### Last updated: 29.11.2016
 
 --
 
@@ -41,5 +41,5 @@ The easiest way to add opengraph tags is to add the block in the base header.tpl
     {* Meta opengraph tags *}
     {block name='frontend_index_header_meta_tags_opengraph'}{/block}
     ```
-    
+
     ![Add opengraph tags block](/readme/readme_meta_tags_opengraph.png)
