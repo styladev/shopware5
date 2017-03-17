@@ -1,7 +1,7 @@
 # Styla SEO Enhancements Shopware Module (v5.2.1)
 #### Author: Mark Mulder (BSolut GmbH)
 #### Contributor: Sebastian Sachtleben, Christian Korndoerfer, Roberto Solís
-#### Last updated: 29.11.2016
+#### Last updated: 16.03.2017
 
 --
 
@@ -21,12 +21,12 @@ If everything is set up correctly the following pages will be accessible:
 
     - **Main magazine:** http://[yourwebsite.com]/[Styla Base Folder]/
     - **Tag:** http://[yourwebsite.com]/[Styla Base Folder]/tag/[tagname]
-    - **Category:** mhttp://[yourwebsite.com]/[Styla Base Folder]/user/[Styla Magazine ID]/category/[category]
+    - **Category:** http://[yourwebsite.com]/[Styla Base Folder]/user/[Styla Magazine ID]/category/[category]
     - **Story:** http://[yourwebsite.com]/[Styla Base Folder]/story/[storyname]
     - **Search:** http://[yourwebsite.com]/[Styla Base Folder]/search/[searchterm]
 
 
-### Please do not create any subpages in your CMS or directories for your magazine. The plugin itself will take care of setting up the /magazine/ (or any other) page on which the magazine will appear and of the roouting as well. 
+### Please do not create any subpages in your CMS or directories for your magazine. The plugin itself will take care of setting up the /magazine/ (or any other) page on which the magazine will appear and of the routing as well. 
 
 --
 
