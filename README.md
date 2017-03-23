@@ -3,6 +3,8 @@
 #### Contributor: Sebastian Sachtleben, Christian Korndoerfer, Roberto Solís
 #### Last updated: 16.03.2017
 
+Styla Connect is a module to connect your Shopware Store with [Styla](http://www.styla.com/). The first diagram on [this page](https://styladocs.atlassian.net/wiki/spaces/CO/pages/9961481/Technical+Integration) should provide you an overview of what the plugin does and how it exchanges data with Styla. 
+
 --
 
 ## Installation How-to
