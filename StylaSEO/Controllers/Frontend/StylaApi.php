@@ -152,7 +152,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 	//	copied from /engine/Shopware/Core/sArticles.php
 	private function getLinksOfProduct($productId, $productName, $categoryId = null){
 		$config = Shopware()->Container()->get('config');
-		$baseFile = $config->get('baseFile');
+		$baseFile = preg_replace('{/$}', '', $config->get('baseFile'));
 
 		$detail = $baseFile . "?sViewport=detail&sArticle=" . $productId;
 		if($categoryId) {
