@@ -15,6 +15,10 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
         echo "Invalid call"; exit;
     }
 
+    public function double_slashes_clean($string){
+    	return preg_replace("#(^|[^:])//+#", "\\1/", $string);
+    }
+
 	public function categoriesAction(){
 		$resource = \Shopware\Components\Api\Manager::getResource('category');
 
@@ -140,7 +144,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 					'caption' => htmlentities($value['name']),
 					'image' => $imgRes['src']['original'],
 					'imageSmall' => $imgRes['src'][0],
-					'pageUrl' => $this->getLinksOfProduct($value['id'], htmlentities($value['name'])),
+					'pageUrl' => $this->double_slashes_clean($this->getLinksOfProduct($value['id'], htmlentities($value['name']))),
 					'shop' => ($value['active'] ? 'true' : 'false'));
 		}
 		//echo '<pre>'; print_r($res); exit;
