@@ -196,7 +196,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		}
 		$res = array('id' => $article['mainDetail']['number'], //$article['id']
 				'name' => htmlentities($article['name']),
-				'saleable' => ($article['active'] && $article['mainDetail']['inStock'] > 0) ? 'true' : 'false',
+				'saleable' => ($article['active'] && ($article['mainDetail']['inStock'] > 0 || !$article['lastStock'] )) ? 'true' : 'false',
 				'price' => $priceFormatted,
 				'priceTemplate' => '# {price} &euro;',
 				'oldPrice' => $oldPriceFormatted,
@@ -216,7 +216,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			foreach($article['mainDetail']['configuratorOptions'] as $m_option){
 				if($variant['id'] == $m_option['groupId']){
 					//$rr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
-					$saleable = ($article['mainDetail']['inStock'] > 0) ? 'true' : 'false';
+					$saleable = ($article['mainDetail']['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
 					$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
 						'id' => $m_option['id'],
 						'label' => htmlentities($m_option['name']),
@@ -232,7 +232,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 				foreach($configuration['configuratorOptions'] as $m_option){
 					if($variant['id'] == $m_option['groupId']){
 						$rrr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
-						$saleable = ($configuration['inStock'] > 0) ? 'true' : 'false';
+						$saleable = ($configuration['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
 						$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
 							'id' => $m_option['id'],
 							'label' => htmlentities($m_option['name']),
