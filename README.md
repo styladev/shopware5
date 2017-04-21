@@ -11,7 +11,7 @@ The first diagram on [this page](https://styladocs.atlassian.net/wiki/spaces/CO/
 
 - Place the *StylaSEO* folder at the following location of your Shopware installaton: `engine/Shopware/Plugins/Local/Frontend`
 
-- Once the code is in place, access your Shopware administration page. The Styla SEO Enhancements Shopware module can be configured and activated under **Configuration -> Plugin Manager -> Installed**.
+- Once the code is in place, access your Shopware administration page. The Styla Magazine Plugin can be configured and activated under **Configuration -> Plugin Manager -> Installed**.
 
 - Click on the Pencil (edit) icon to edit the plugin settings:
     - **Styla Magazine ID**: Your Styla username which is provided to you by your Styla account manager.

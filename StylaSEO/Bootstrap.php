@@ -102,7 +102,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         }
 
         if(!$this->_styla_username){
-            die('No Amazine Username set in Plugin settings');
+            die('No Styla Magazine ID set in Plugin settings');
         }
 
         require_once $this->Path() . 'Components/Styla/Utils.php';
