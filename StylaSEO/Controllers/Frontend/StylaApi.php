@@ -229,19 +229,18 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			unset($m_option);
 
 			foreach($article['details'] as $configuration){
-				foreach($configuration['configuratorOptions'] as $m_option){
-					if($variant['id'] == $m_option['groupId']){
-						$rrr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
-						$saleable = ($configuration['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
-						$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
-							'id' => $m_option['id'],
-							'label' => htmlentities($m_option['name']),
-							'price' => $priceFormatted,
-							//'products' => array_merge($rrr, array($configuration['number']))
-							'products' => array_merge($rrr, array(0 => array('id' => $configuration['number'], 'saleable' => $saleable)))
-						);
-					}
-				}
+		        $m_option = $configuration['configuratorOptions'][0];
+		        if($variant['id'] == $m_option['groupId']){
+		        $rrr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
+		        $saleable = ($configuration['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
+		        $res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
+		            'id' => $m_option['id'],
+		            'label' => htmlentities($m_option['name']),
+		            'price' => $configuration['prices'][0]['price'],
+		            //'products' => array_merge($rrr, array($configuration['number']))
+		            'products' => array_merge($rrr, array(0 => array('id' => $configuration['number'], 'saleable' => $saleable)))
+		        );
+		        }
 			}
 
 		}
