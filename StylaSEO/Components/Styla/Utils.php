@@ -13,7 +13,7 @@ class StylaUtils{
 
 
 	    $url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/preloader/'.$username.'.js';
-	    return '<script type="text/javascript" src="'.$url.'"></script>';
+	    return '<script type="text/javascript" src="'.$url.'" async></script>';
     }
 
     public static function getActionFromUrl($basedir = 'magazin'){

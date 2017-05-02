@@ -15,6 +15,10 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
         echo "Invalid call"; exit;
     }
 
+    public function double_slashes_clean($string){
+    	return preg_replace("#(^|[^:])//+#", "\\1/", $string);
+    }
+
 	public function categoriesAction(){
 		$resource = \Shopware\Components\Api\Manager::getResource('category');
 
@@ -140,7 +144,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 					'caption' => htmlentities($value['name']),
 					'image' => $imgRes['src']['original'],
 					'imageSmall' => $imgRes['src'][0],
-					'pageUrl' => $this->getLinksOfProduct($value['id'], htmlentities($value['name'])),
+					'pageUrl' => $this->double_slashes_clean($this->getLinksOfProduct($value['id'], htmlentities($value['name']))),
 					'shop' => ($value['active'] ? 'true' : 'false'));
 		}
 		//echo '<pre>'; print_r($res); exit;
@@ -192,7 +196,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		}
 		$res = array('id' => $article['mainDetail']['number'], //$article['id']
 				'name' => htmlentities($article['name']),
-				'saleable' => ($article['active'] && $article['mainDetail']['inStock'] > 0) ? 'true' : 'false',
+				'saleable' => ($article['active'] && ($article['mainDetail']['inStock'] > 0 || !$article['lastStock'] )) ? 'true' : 'false',
 				'price' => $priceFormatted,
 				'priceTemplate' => '# {price} &euro;',
 				'oldPrice' => $oldPriceFormatted,
@@ -212,7 +216,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			foreach($article['mainDetail']['configuratorOptions'] as $m_option){
 				if($variant['id'] == $m_option['groupId']){
 					//$rr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
-					$saleable = ($article['mainDetail']['inStock'] > 0) ? 'true' : 'false';
+					$saleable = ($article['mainDetail']['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
 					$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
 						'id' => $m_option['id'],
 						'label' => htmlentities($m_option['name']),
@@ -225,19 +229,18 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			unset($m_option);
 
 			foreach($article['details'] as $configuration){
-				foreach($configuration['configuratorOptions'] as $m_option){
-					if($variant['id'] == $m_option['groupId']){
-						$rrr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
-						$saleable = ($configuration['inStock'] > 0) ? 'true' : 'false';
-						$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
-							'id' => $m_option['id'],
-							'label' => htmlentities($m_option['name']),
-							'price' => $priceFormatted,
-							//'products' => array_merge($rrr, array($configuration['number']))
-							'products' => array_merge($rrr, array(0 => array('id' => $configuration['number'], 'saleable' => $saleable)))
-						);
-					}
-				}
+		        $m_option = $configuration['configuratorOptions'][0];
+		        if($variant['id'] == $m_option['groupId']){
+		        $rrr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
+		        $saleable = ($configuration['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
+		        $res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ] = array(
+		            'id' => $m_option['id'],
+		            'label' => htmlentities($m_option['name']),
+		            'price' => (string) number_format(($configuration['prices'][0]['price'] * ($article['tax']['tax'] / 100 + 1 )), 2, '.', ''),
+					//'products' => array_merge($rrr, array($configuration['number']))
+		            'products' => array_merge($rrr, array(0 => array('id' => $configuration['number'], 'saleable' => $saleable, 'price' => (string) number_format(($configuration['prices'][0]['price'] * ($article['tax']['tax'] / 100 + 1 )), 2, '.', ''))))
+		        );
+		        }
 			}
 
 		}
