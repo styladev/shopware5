@@ -8,7 +8,7 @@
 {block name='frontend_index_content_left'}
     {$smarty.block.parent}
     <style>
-        /* this prevents mobile menu to be rendered on desktop version */
+        /* hide on desktop version */
         aside.sidebar-main { display: none; }
     </style>
 {/block}
