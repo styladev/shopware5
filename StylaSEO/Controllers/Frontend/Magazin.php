@@ -10,26 +10,25 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
     protected $_url_query_params  = null;
     protected $_base_dir          = null;
 
+    public function preDispatch() {
+      $view = $this->View();
+      $view->addTemplateDir(__DIR__ . '/../../Views');
+      // $view->setScope(Enlight_Template_Manager::SCOPE_PARENT);
+      $view->extendsTemplate('frontend/custom/index.tpl');
+      $view->loadTemplate('frontend/magazin/index.tpl');
 
+      $config = Enlight_Application::Instance()->Bootstrap()->Config();
+      $this->_username    = $config->get('styla_username');
+      $this->_source_url  = $config->get('styla_seo_url');
+      $this->_snippet_url = $config->get('styla_api_url');
+      $this->_base_dir    = $config->get('styla_basedir');
+      $this->_source_url = rtrim($this->_source_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
+      $this->_snippet_url = rtrim($this->_snippet_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
+      $this->_url_query_params = StylaUtils::getQueryFromUrl();
 
-    public function preDispatch(Enlight_Event_EventArgs $args){
-
-        $this->View()->setScope(Enlight_Template_Manager::SCOPE_PARENT);
-        $this->View()->extendsTemplate('frontend/custom/index.tpl');
-        $this->View()->loadTemplate('frontend/magazin/index.tpl');
-
-        $config = Enlight_Application::Instance()->Bootstrap()->Config();
-        $this->_username    = $config->get('styla_username');
-        $this->_source_url  = $config->get('styla_seo_url');
-        $this->_snippet_url = $config->get('styla_api_url');
-        $this->_base_dir    = $config->get('styla_basedir');
-        $this->_source_url = rtrim($this->_source_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
-        $this->_snippet_url = rtrim($this->_snippet_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
-        $this->_url_query_params = StylaUtils::getQueryFromUrl();
-
-        if(!$this->_username) {
-            die('No username set for Styla SEO plugin'); // TODO maybe something better than die, but then again since it's a required field this should never really be empty
-        }
+      if(!$this->_username) {
+        die('No username set for Styla SEO plugin'); // TODO maybe something better than die, but then again since it's a required field this should never really be empty
+      }
     }
 
     public function postDispatch(){
