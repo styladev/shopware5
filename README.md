@@ -7,6 +7,10 @@ Styla Magazine Plugin is a module to connect your Shopware 5 Store with [Styla](
 
 The first diagram on [this page](https://styladocs.atlassian.net/wiki/spaces/CO/pages/9961481/Technical+Integration) should provide you an overview of what the plugin does and how it exchanges data with Styla. 
 
+## Requirements
+
+There have been issues with PHP 7 in the past. Should you have some, please report back to us. The plugin works best on PHP 5.6.
+
 ## Installation How-to
 
 - Place the *StylaSEO* folder at the following location of your Shopware installaton: `engine/Shopware/Plugins/Local/Frontend`
