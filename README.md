@@ -1,11 +1,15 @@
-# Styla SEO Enhancements Shopware Module (v5.2.2)
+# Styla SEO Enhancements Shopware Module (v5.2.3)
 #### Author: Mark Mulder (BSolut GmbH)
 #### Contributor: Sebastian Sachtleben, Christian Korndoerfer, Roberto Solís, Antonio Cosentino
-#### Last updated: 28.04.2017
+#### Last updated: 10.05.2017
 
 Styla Magazine Plugin is a module to connect your Shopware 5 Store with [Styla](http://www.styla.com/). For our Shopware 4 plugin check this https://github.com/styladev/shopware4
 
 The first diagram on [this page](https://styladocs.atlassian.net/wiki/spaces/CO/pages/9961481/Technical+Integration) should provide you an overview of what the plugin does and how it exchanges data with Styla. 
+
+## Requirements
+
+There have been issues with PHP 7 in the past. Should you have some, please report back to us. The plugin works best on PHP 5.6.
 
 ## Installation How-to
 
