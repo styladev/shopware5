@@ -237,7 +237,6 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		            'id' => $m_option['id'],
 		            'label' => htmlentities($m_option['name']),
 		            'price' => (string) number_format(($configuration['prices'][0]['price'] * ($article['tax']['tax'] / 100 + 1 )), 2, '.', ''),
-					//'products' => array_merge($rrr, array($configuration['number']))
 		            'products' => array_merge($rrr, array(0 => array('id' => $configuration['number'], 'saleable' => $saleable, 'price' => (string) number_format(($configuration['prices'][0]['price'] * ($article['tax']['tax'] / 100 + 1 )), 2, '.', ''))))
 		        );
 		        }
