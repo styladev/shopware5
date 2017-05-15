@@ -12,7 +12,7 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
 
 
-    public function preDispatch(Enlight_Event_EventArgs $args){
+    public function preDispatch(Enlight_Event_EventArgs $args=null){
 
         $this->View()->setScope(Enlight_Template_Manager::SCOPE_PARENT);
         $this->View()->extendsTemplate('frontend/custom/index.tpl');
