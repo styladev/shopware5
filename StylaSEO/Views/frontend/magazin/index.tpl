@@ -6,4 +6,5 @@
 
 {* Sidebar left - Disable added 151012 *}
 {block name="frontend_index_content_left"}
+    {include file="frontend/index/sidebar.tpl"}
 {/block}
