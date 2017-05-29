@@ -18,7 +18,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
     public function getVersion()
     {
-        return '5.2.2';
+        return '5.2.5';
     }
 
     public function getInfo()
@@ -41,6 +41,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->createConfigForm();
         $this->registerController('Frontend', 'stylaApi');
         $this->registerController('Frontend', 'magazin');
+        $this->registerController('Frontend', 'stylapluginversion');
         return true;
     }
 
@@ -78,6 +79,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->subscribeEvent('Enlight_Controller_Front_PostDispatch', 'onPostDispatch');
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_Magazin', 'onGetControllerPathFrontend');
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaApi', 'onGetControllerPathFrontend');
+        $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaPluginVersion', 'onGetControllerPathFrontend');
 
         return array(
             'success' => true,
@@ -95,9 +97,12 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
         if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
 		    $controller	= 'magazin';
-        } else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
-		    $controller	= 'stylaapi';
-	    } else {
+        } else if( ($request->getRequestUri() == '/styla-plugin-version' || strpos($request->getRequestUri(), '/styla-plugin-version/') !== false) ) {
+		    $controller	= 'stylapluginversion';
+	    } else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
+            $controller = 'stylaapi';
+        }  
+        else {
             return;
         }
 
@@ -132,8 +137,11 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
             return $this->Path() . 'Controllers/Frontend/Magazin.php';
         }
-	    else{
+	    else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
             return $this->Path() . 'Controllers/Frontend/StylaApi.php';
+        }
+        else if( ($request->getRequestUri() == '/styla-plugin-version' || strpos($request->getRequestUri(), '/styla-plugin-version/') !== false) ) {
+            return $this->Path() . 'Controllers/Frontend/StylaPluginVersion.php';
         }
     }
 
