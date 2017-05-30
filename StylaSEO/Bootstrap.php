@@ -137,11 +137,11 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
             return $this->Path() . 'Controllers/Frontend/Magazin.php';
         }
-	    else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
-            return $this->Path() . 'Controllers/Frontend/StylaApi.php';
-        }
-        else if( ($request->getRequestUri() == '/styla-plugin-version' || strpos($request->getRequestUri(), '/styla-plugin-version/') !== false) ) {
+	    else if ($url == '/styla-plugin-version' || strpos($url, '/styla-plugin-version/') !== false) {
             return $this->Path() . 'Controllers/Frontend/StylaPluginVersion.php';
+        }
+        else {
+            return $this->Path() . 'Controllers/Frontend/StylaApi.php';
         }
     }
 
