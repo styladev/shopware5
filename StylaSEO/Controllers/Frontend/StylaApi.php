@@ -196,6 +196,8 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		}
 		$res = array('id' => $article['mainDetail']['number'], //$article['id']
 				'name' => htmlentities($article['name']),
+				'description' => $article['description'],
+				'categories' => array_column($article['categories'], 'id'),
 				'saleable' => ($article['active'] && ($article['mainDetail']['inStock'] > 0 || !$article['lastStock'] )) ? 'true' : 'false',
 				'price' => $priceFormatted,
 				'priceTemplate' => '# {price} &euro;',
