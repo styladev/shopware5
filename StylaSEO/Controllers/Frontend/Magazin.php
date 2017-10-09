@@ -49,7 +49,8 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
             $custom_page['page_title'] = $ret['page_title'];
             $custom_page['meta_description'] = $ret['meta_description'];
             $custom_page['query_params'] = $ret['query_params'];
-            $this->View()->assign('sContent', $ret['noscript_content']."\r\n".$js_include."\r\n".'<div id="stylaMagazine"></div>');
+            $stylaDiv = '<div id="stylaMagazine" data-magazinename="'.$this->_username.'" data-rootpath="'.$this->_base_dir.'"></div>';
+            $this->View()->assign('sContent', $ret['noscript_content']."\r\n".$js_include."\r\n".$stylaDiv);
             $status_code = $ret['status_code'];
         }
 
