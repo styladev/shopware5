@@ -169,8 +169,8 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 
 	public function getCurrency(){
 		$shop = Shopware()->Shop();
-		$system->sCurrency = $shop->getCurrency()->toArray();
-        return $system;
+		$currency = $shop->getCurrency()->toArray();
+        return $currency;
 	}
 
 	public function productAction(){
@@ -199,14 +199,14 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 			$oldPriceFormatted = money_format("%.2n", $taxInclOldPrice);
 		}
 
-		switch ($currencyInfo->sCurrency['position']) {
+		switch ($currencyInfo['position']) {
 			case '16':
-				$priceTemplate = '#{price} ' . $currencyInfo->sCurrency['symbol'];
+				$priceTemplate = '#{price} ' . $currencyInfo['symbol'];
 			break;
 			
 			case '32':
 			default:
-				$priceTemplate = $currencyInfo->sCurrency['symbol'] . ' #{price}';
+				$priceTemplate = $currencyInfo['symbol'] . ' #{price}';
 			break;
 		}
 
