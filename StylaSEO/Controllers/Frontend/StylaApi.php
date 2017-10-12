@@ -170,7 +170,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 	public function getCurrency(){
 		$shop = Shopware()->Shop();
 		$currency = $shop->getCurrency()->toArray();
-        return $currency;
+		return $currency;
 	}
 
 	public function productAction(){
