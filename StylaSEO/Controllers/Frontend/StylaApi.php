@@ -167,9 +167,15 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		return $rewrite;
 	}
 
+	public function getCurrency(){
+		$shop = Shopware()->Shop();
+		$currency = $shop->getCurrency()->toArray();
+		return $currency;
+	}
+
 	public function productAction(){
 		$resource = \Shopware\Components\Api\Manager::getResource('article');
-
+		$currencyInfo = $this->getCurrency();
 		$id = $this->Request()->getParam('id');
 		$useNumberAsId = (boolean) $this->Request()->getParam('useNumberAsId', 0);
 
@@ -186,21 +192,31 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 		}
 
 		$taxInclPrice = $article['mainDetail']['prices'][0]['price'] + ($article['mainDetail']['prices'][0]['price'] * ($article['tax']['tax'] / 100));
-		setlocale(LC_MONETARY,"de_DE");
 		$priceFormatted = money_format("%.2n", $taxInclPrice);
 		$oldPrice = '';
 		if($article['mainDetail']['prices'][0]['pseudoPrice'] > 0){
 			$taxInclOldPrice = $article['mainDetail']['prices'][0]['pseudoPrice'] + ($article['mainDetail']['prices'][0]['pseudoPrice'] * ($article['tax']['tax'] / 100));
-			setlocale(LC_MONETARY,"de_DE");
 			$oldPriceFormatted = money_format("%.2n", $taxInclOldPrice);
 		}
+
+		switch ($currencyInfo['position']) {
+			case '16':
+				$priceTemplate = '#{price} ' . $currencyInfo['symbol'];
+			break;
+			
+			case '32':
+			default:
+				$priceTemplate = $currencyInfo['symbol'] . ' #{price}';
+			break;
+		}
+
 		$res = array('id' => $article['mainDetail']['number'], //$article['id']
 				'name' => htmlentities($article['name']),
 				'description' => $article['description'],
 				'categories' => array_column($article['categories'], 'id'),
 				'saleable' => ($article['active'] && ($article['mainDetail']['inStock'] > 0 || !$article['lastStock'] )) ? 'true' : 'false',
 				'price' => $priceFormatted,
-				'priceTemplate' => '# {price} &euro;',
+				'priceTemplate' => $priceTemplate,
 				'oldPrice' => $oldPriceFormatted,
 				'minqty' => $article['mainDetail']['minPurchase'],
 				'maxqty' => ($article['mainDetail']['maxPurchase'] > 0) ? $article['mainDetail']['maxPurchase'] : 100,
