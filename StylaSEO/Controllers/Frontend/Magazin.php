@@ -39,10 +39,8 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
         $ret = null;
 
-        if($type != 'search'){// for now at least we don't need any metadata coming back for search results
-            $path = StylaUtils::getCurrentPath($this->_base_dir);
-            $ret = StylaUtils::getRemoteContent($this->_username, $path, $this->_url_query_params, $this->_source_url);
-        }
+        $path = StylaUtils::getCurrentPath($this->_base_dir);
+        $ret = StylaUtils::getRemoteContent($this->_username, $path, $this->_url_query_params, $this->_source_url);
 
         $custom_page = $this->View()->getAssign('sCustomPage');
         if($ret){
@@ -56,8 +54,6 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         }
 
         $this->View()->assign('sCustomPage', $custom_page);
-        //$this->View()->assign('page_title', $page_title);
-        //$this->View()->assign('meta_description', $meta_description);
         $this->View()->assign('feed_type', $type);
         $this->Response()->setHttpResponseCode($status_code);
     }
