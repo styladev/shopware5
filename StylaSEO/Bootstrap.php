@@ -88,7 +88,6 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     }
 
     public function onPreDispatch(Enlight_Controller_EventArgs $args){
-
         $request  = $args->getRequest();
         $url = strtok($request->getRequestUri(),'?');
 
@@ -101,7 +100,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 		    $controller	= 'stylapluginversion';
 	    } else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
             $controller = 'stylaapi';
-        }  
+        }
         else {
             return;
         }
@@ -113,12 +112,11 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         require_once $this->Path() . 'Components/Styla/Utils.php';
         require_once $this->Path() . 'Components/Styla/Curl.php';
 
-        $action = StylaUtils::getActionFromUrl();
-
         $this->registerTemplateDir();
-        $request->setControllerName($controller);	//'magazin'
-        $request->setActionName($action);
-
+        $request->setControllerName($controller);
+        if ($controller == 'stylaapi') {
+            $request->setActionName(StylaUtils::getActionFromUrl());
+        }
     }
 
     public function onPostDispatch(Enlight_Event_EventArgs $args){

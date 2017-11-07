@@ -2,7 +2,6 @@
 
 class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
-    protected $_allowed_actions   = array('tag','story','user','query');
     protected $_username          = null;
     protected $_source_url        = null;
     protected $_snippet_url       = null;
@@ -56,30 +55,6 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         $this->View()->assign('sCustomPage', $custom_page);
         $this->View()->assign('feed_type', $type);
         $this->Response()->setHttpResponseCode($status_code);
-    }
-
-    public function indexAction(){
-
-    }
-
-    public function tagAction(){
-
-    }
-
-    public function storyAction(){
-
-    }
-
-    public function userAction(){
-
-    }
-
-    public function searchAction(){
-
-    }
-
-    public function queryAction(){
-        $this->_url_query_params = StylaUtils::getQueryFromUrl();
     }
 
 }

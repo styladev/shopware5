@@ -32,16 +32,6 @@ class StylaUtils{
         return rtrim($ret, '/');
     }
 
-    public static function getParamFromUrl($search){
-        $arr = parse_url($_SERVER['REQUEST_URI']);
-        $url = $arr['path'];
-        if(($start = strpos($url,$search))===false)
-            return false;
-
-        $ret = substr($url, $start+strlen($search)+1);
-        return rtrim($ret, '/');
-    }
-
     public static function getQueryFromUrl(){
         $url = parse_url($_SERVER['REQUEST_URI']);
         $query = $url['query'];
