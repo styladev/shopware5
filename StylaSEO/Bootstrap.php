@@ -114,8 +114,10 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
         $this->registerTemplateDir();
         $request->setControllerName($controller);
-        if ($controller != 'magazin') {
+        if ($controller !== 'magazin') {
             $request->setActionName(StylaUtils::getActionFromUrl());
+        } else {
+            $request->setActionName('index');
         }
     }
 

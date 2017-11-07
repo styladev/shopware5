@@ -57,4 +57,8 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         $this->Response()->setHttpResponseCode($status_code);
     }
 
+    public function indexAction(){
+
+    }
+
 }
