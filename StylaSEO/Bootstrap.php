@@ -114,7 +114,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
         $this->registerTemplateDir();
         $request->setControllerName($controller);
-        if ($controller == 'stylaapi') {
+        if ($controller != 'magazin') {
             $request->setActionName(StylaUtils::getActionFromUrl());
         }
     }
