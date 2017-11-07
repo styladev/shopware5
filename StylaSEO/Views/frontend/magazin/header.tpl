@@ -8,9 +8,7 @@
 
 {* Metatags *}
 {block name='frontend_index_header_meta_tags_opengraph'}
-		{if $feed_type == 'user' || $feed_type == 'magazine' || $feed_type == 'story' || $feed_type == 'tag'}
-				{$sCustomPage.head_content}
-		{/if}
+		{$sCustomPage.head_content}
 {/block}
 
 {* Newly added 151008 *}

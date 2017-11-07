@@ -22,6 +22,16 @@ class StylaUtils{
 	    return $action;
     }
 
+    public static function getCurrentPath($basedir = 'magazin'){
+        $arr = parse_url($_SERVER['REQUEST_URI']);
+        $url = $arr['path'];
+        if(($start = strpos($url,$basedir))===false)
+            return false;
+
+        $ret = substr($url, $start+strlen($basedir)+1);
+        return rtrim($ret, '/');
+    }
+
     public static function getParamFromUrl($search){
         $arr = parse_url($_SERVER['REQUEST_URI']);
         $url = $arr['path'];
@@ -29,7 +39,7 @@ class StylaUtils{
             return false;
 
         $ret = substr($url, $start+strlen($search)+1);
-        return rtrim($ret,'/');
+        return rtrim($ret, '/');
     }
 
     public static function getQueryFromUrl(){
@@ -38,25 +48,23 @@ class StylaUtils{
         return $query;
     }
 
-    public static function getRemoteContent($username, $params, $query_params, $src_url = null){
-
+    public static function getRemoteContent($username, $path, $query_params, $src_url = null){
         $cache = Shopware()->Cache();
         $config = Shopware()->Config();
 
         if(!$src_url)
             $src_url =  self::STYLA_URL;
 
-        $type = $params['type'];
         self::$_username = $username;
         if($query_params)
             $query_params = '?'.$query_params;
-        $url = $src_url.'clients/'.$username.'?url='.$params['route'].$query_params;
+        $url = $src_url.'clients/'.$username.'?url='.$path.$query_params;
 
         $cache_key = self::getCacheKey($url);
 
         if (!empty($config->caching)) {
             if (!$cache->test($cache_key)) {
-                $arr = self::_loadRemoteContent($url, $query_params, $type);
+                $arr = self::_loadRemoteContent($url, $query_params);
                 if(!$arr)
                     return;
 
@@ -65,14 +73,14 @@ class StylaUtils{
                 $arr = $cache->load($cache_key);
             }
         } else {
-            $arr = self::_loadRemoteContent($url, $type);
+            $arr = self::_loadRemoteContent($url);
         }
 
         return $arr;
 
     }
 
-    private static function _loadRemoteContent($url, $query_params, $type = null){
+    private static function _loadRemoteContent($url, $query_params){
         $curl = new StylaCurl();
 
         $curl_opts = array(
