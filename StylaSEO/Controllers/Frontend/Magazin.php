@@ -2,7 +2,6 @@
 
 class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
-    protected $_allowed_actions   = array('tag','story','user','query');
     protected $_username          = null;
     protected $_source_url        = null;
     protected $_snippet_url       = null;
@@ -39,9 +38,8 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
         $ret = null;
 
-        if($type != 'search'){// for now at least we don't need any metadata coming back for search results
-            $ret = StylaUtils::getRemoteContent($this->_username, $this->_feed_params, $this->_url_query_params, $this->_source_url);
-        }
+        $path = StylaUtils::getCurrentPath($this->_base_dir);
+        $ret = StylaUtils::getRemoteContent($this->_username, $path, $this->_url_query_params, $this->_source_url);
 
         $custom_page = $this->View()->getAssign('sCustomPage');
         if($ret){
@@ -55,58 +53,12 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         }
 
         $this->View()->assign('sCustomPage', $custom_page);
-        $this->View()->assign('page_title', $page_title);
-        $this->View()->assign('meta_description', $meta_description);
         $this->View()->assign('feed_type', $type);
         $this->Response()->setHttpResponseCode($status_code);
     }
 
     public function indexAction(){
-    	$this->_feed_params = array('type' => 'magazine', 'route' => '/');
-    }
 
-    public function tagAction(){
-        $tagname = StylaUtils::getParamFromUrl('tag');
-        if(!$tagname){
-            $this->redirect('/');
-        }
-        $this->_feed_params = array('type' => 'tag', 'tagname' => $tagname);
-    }
-
-    public function storyAction(){
-        $storyname = StylaUtils::getParamFromUrl('story');
-        if(!$storyname){
-            $this->redirect('/');
-        }
-        $this->_feed_params = array('type' => 'story', 'storyname' => $storyname, 'route' => 'story/'.$storyname);
-    }
-
-    public function userAction(){
-        $username = StylaUtils::getParamFromUrl('user');
-        if(!$username){
-            $this->redirect('/');
-        }
-        $this->_feed_params = array('type' => 'user', 'username' => $username, 'route' => 'user/'.$username);
-    }
-
-    public function searchAction(){
-        $searchterm = StylaUtils::getParamFromUrl('search');
-        if(!$searchterm){
-            $this->redirect('/');
-        }
-        $this->_feed_params = array('type' => 'search', 'searchterm' => $searchterm, 'route' => 'search/'.$searchterm);
-    }
-
-    public function queryAction(){
-        $this->_url_query_params = StylaUtils::getQueryFromUrl();
-    }
-
-    public function __call($name, $value = null) {
-        $url = trim(strtok($_SERVER["REQUEST_URI"],'?'), '/');
-        $arr = explode('/', $url);
-        if($arr[0] == $this->_base_dir && !empty($arr[1]) && !in_array($arr[1], array('search','story','user','tag','category','magazine',$this->_username))){
-            StylaCurl::call($this->_source_url, array(), array('keyword' => $arr[1]));
-        }
     }
 
 }
