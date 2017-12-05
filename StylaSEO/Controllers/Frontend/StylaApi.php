@@ -150,8 +150,8 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
             $imagesArr[0] = $mainImg['src']['original']; 
 
             if (is_array($additionalImages)){
-                foreach ($additionalImages as $value) {
-                    $imagesArr[] = $value['src']['original'];        
+                foreach ($additionalImages as $image) {
+                    $imagesArr[] = $image['src']['original'];        
                 }
             }
 
