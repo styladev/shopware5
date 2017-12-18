@@ -74,7 +74,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
         $limit = $this->Request()->getParam('limit', 1000);
         $offset = $this->Request()->getParam('offset', 0);
         $sort = $this->Request()->getParam('sort', array());
-        //$filter = $this->Request()->getParam('filter', array());
+        $filter = $this->Request()->getParam('filter', array());
         $categoryId = $this->Request()->getParam('category', '');
         $search = $this->Request()->getParam('search', '');
 
@@ -147,11 +147,11 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
             $additionalImages = $articles->sGetArticlePictures($value['id'], false, 0, null, true);
 
             $imagesArr = array();
-            $imagesArr[0] = $mainImg['src']['original']; 
+            $imagesArr[0] = $mainImg['src']['original'];
 
             if (is_array($additionalImages)){
                 foreach ($additionalImages as $image) {
-                    $imagesArr[] = $image['src']['original'];        
+                    $imagesArr[] = $image['src']['original'];
                 }
             }
 
