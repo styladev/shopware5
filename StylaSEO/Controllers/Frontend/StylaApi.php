@@ -145,7 +145,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
         foreach ($result['data'] as $key => $value) {
             $mainImg = $articles->getArticleListingCover($value['id']);
             $additionalImages = $articles->sGetArticlePictures($value['id'], false, 0, null, true);
-
+            $articleDetails = $articles->sGetArticleById($value['id']);
             $imagesArr = array();
             $imagesArr[0] = $mainImg['src']['original'];
 
@@ -157,6 +157,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 
             $res[] = array(
                 'shopId' => $value['id'],
+                'sku' => $articleDetails['ordernumber'],
                 'caption' => htmlentities($value['name']),
                 'images' => $imagesArr,
                 'pageUrl' => $this->double_slashes_clean($this->getLinksOfProduct($value['id'], htmlentities($value['name']))),
