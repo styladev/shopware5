@@ -74,7 +74,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
         $limit = $this->Request()->getParam('limit', 1000);
         $offset = $this->Request()->getParam('offset', 0);
         $sort = $this->Request()->getParam('sort', array());
-        //$filter = $this->Request()->getParam('filter', array());
+        $filter = $this->Request()->getParam('filter', array());
         $categoryId = $this->Request()->getParam('category', '');
         $search = $this->Request()->getParam('search', '');
 
@@ -143,13 +143,23 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
 
         $res = array();
         foreach ($result['data'] as $key => $value) {
-            $imgRes = $articles->getArticleListingCover($value['id']);
+            $mainImg = $articles->getArticleListingCover($value['id']);
+            $additionalImages = $articles->sGetArticlePictures($value['id'], false, 0, null, true);
+            $articleDetails = $articles->sGetArticleById($value['id']);
+            $imagesArr = array();
+            $imagesArr[0] = $mainImg['src']['original'];
+
+            if (is_array($additionalImages)){
+                foreach ($additionalImages as $image) {
+                    $imagesArr[] = $image['src']['original'];
+                }
+            }
 
             $res[] = array(
                 'shopId' => $value['id'],
+                'sku' => $articleDetails['ordernumber'],
                 'caption' => htmlentities($value['name']),
-                'image' => $imgRes['src']['original'],
-                'imageSmall' => $imgRes['src'][0],
+                'images' => $imagesArr,
                 'pageUrl' => $this->double_slashes_clean($this->getLinksOfProduct($value['id'], htmlentities($value['name']))),
                 'shop' => ($value['active'] ? 'true' : 'false'));
         }
