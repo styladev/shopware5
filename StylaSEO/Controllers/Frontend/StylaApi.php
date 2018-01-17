@@ -155,11 +155,31 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
                 }
             }
 
+            // Alternative method to get images - may solve issues for clients with custom images implementation
+            $imagesNewArr = array();
+
+            $imagesNewArr[] = $articleDetails['image']['source'];
+
+            if ($articleDetails['sConfigurator']){
+                foreach ($articleDetails['sConfigurator'] as $variant) {
+                    if ($variant['values']) {
+                        foreach ($variant['values'] as $singleValue) {
+                            if ($singleValue['media']['source']) {
+                                if (!in_array($singleValue['media']['source'], $imagesNewArr)){
+                                    $imagesNewArr[] = $singleValue['media']['source'];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             $res[] = array(
                 'shopId' => $value['id'],
                 'sku' => $articleDetails['ordernumber'],
                 'caption' => htmlentities($value['name']),
                 'images' => $imagesArr,
+                'imagesNew' => $imagesNewArr,
                 'pageUrl' => $this->double_slashes_clean($this->getLinksOfProduct($value['id'], htmlentities($value['name']))),
                 'shop' => ($value['active'] ? 'true' : 'false'));
         }
