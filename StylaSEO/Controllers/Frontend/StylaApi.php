@@ -77,6 +77,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
         $filter = $this->Request()->getParam('filter', array());
         $categoryId = $this->Request()->getParam('category', '');
         $search = $this->Request()->getParam('search', '');
+        $imagesMethod = $this->Request()->getParam('images', 'v1'); // determine wich method to use for media. default: v1
 
         $term = trim(stripslashes(html_entity_decode($search)));
         $doSearch = (!$term || strlen($term) < Shopware()->Config()->MinSearchLenght) ? false : true;
@@ -173,9 +174,22 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
                     }
                 }
             }
+            
+            switch ($imagesMethod) {
+                case 'v1': //old method for images (default)
+                default:
+                    $defImages = $imagesArr;
+                break;
 
-            // Putting all images together
-            $defImages = array_values(array_unique(array_merge($imagesArr, $imagesNewArr)));
+                case 'v2': //new method for images
+                    $defImages = $imagesNewArr;
+                break;
+
+                case 'v3': //v1 and v2 combined
+                    $defImages = array_values(array_unique(array_merge($imagesArr, $imagesNewArr)));
+                break;
+                
+            }
 
             $res[] = array(
                 'shopId' => $value['id'],
