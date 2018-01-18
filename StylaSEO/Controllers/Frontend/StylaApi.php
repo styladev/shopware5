@@ -174,7 +174,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
                     }
                 }
             }
-            
+
             switch ($imagesMethod) {
                 case 'v1': //old method for images (default)
                 default:
