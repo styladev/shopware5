@@ -1,3 +1,6 @@
+### v5.3.0 2018-01-18
+* Added new parameter 'images' in feed endpoint to select method for retrieving images (v1, v2 or v3)
+
 ### v5.2.9 2018-01-10
 * Added multiple product images in feed endpoint
 * Returning SKU in feed endpoint
