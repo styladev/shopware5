@@ -77,6 +77,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
         $filter = $this->Request()->getParam('filter', array());
         $categoryId = $this->Request()->getParam('category', '');
         $search = $this->Request()->getParam('search', '');
+        $imagesMethod = $this->Request()->getParam('images', 'v1'); // determine wich method to use for media. default: v1
 
         $term = trim(stripslashes(html_entity_decode($search)));
         $doSearch = (!$term || strlen($term) < Shopware()->Config()->MinSearchLenght) ? false : true;
@@ -155,11 +156,46 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
                 }
             }
 
+            // Alternative method to get images - may solve issues for clients with custom implementation for Media
+            $imagesNewArr = array();
+
+            $imagesNewArr[] = $articleDetails['image']['source'];
+
+            if ($articleDetails['sConfigurator']){
+                foreach ($articleDetails['sConfigurator'] as $variant) {
+                    if ($variant['values']) {
+                        foreach ($variant['values'] as $singleValue) {
+                            if ($singleValue['media']['source']) {
+                                if (!in_array($singleValue['media']['source'], $imagesNewArr)){
+                                    $imagesNewArr[] = $singleValue['media']['source'];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            switch ($imagesMethod) {
+                case 'v1': //old method for images (default)
+                default:
+                    $defImages = $imagesArr;
+                break;
+
+                case 'v2': //new method for images
+                    $defImages = $imagesNewArr;
+                break;
+
+                case 'v3': //v1 and v2 combined
+                    $defImages = array_values(array_unique(array_merge($imagesArr, $imagesNewArr)));
+                break;
+                
+            }
+
             $res[] = array(
                 'shopId' => $value['id'],
                 'sku' => $articleDetails['ordernumber'],
                 'caption' => htmlentities($value['name']),
-                'images' => $imagesArr,
+                'images' => $defImages,
                 'pageUrl' => $this->double_slashes_clean($this->getLinksOfProduct($value['id'], htmlentities($value['name']))),
                 'shop' => ($value['active'] ? 'true' : 'false'));
         }
