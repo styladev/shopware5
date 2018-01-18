@@ -155,7 +155,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
                 }
             }
 
-            // Alternative method to get images - may solve issues for clients with custom images implementation
+            // Alternative method to get images - may solve issues for clients with custom implementation for Media
             $imagesNewArr = array();
 
             $imagesNewArr[] = $articleDetails['image']['source'];
@@ -174,12 +174,14 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
                 }
             }
 
+            // Putting all images together
+            $defImages = array_values(array_unique(array_merge($imagesArr, $imagesNewArr)));
+
             $res[] = array(
                 'shopId' => $value['id'],
                 'sku' => $articleDetails['ordernumber'],
                 'caption' => htmlentities($value['name']),
-                'images' => $imagesArr,
-                'imagesNew' => $imagesNewArr,
+                'images' => $defImages,
                 'pageUrl' => $this->double_slashes_clean($this->getLinksOfProduct($value['id'], htmlentities($value['name']))),
                 'shop' => ($value['active'] ? 'true' : 'false'));
         }
