@@ -35,6 +35,18 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         );
     }
 
+    public function createDbTables(){
+        Shopware()->Db()->query("CREATE TABLE s_styla_seo_content (
+            `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+            `path` varchar(255) DEFAULT NULL,
+            `locale` varchar(10) DEFAULT NULL,
+            `content` text,
+            `time_updated` datetime DEFAULT NULL,
+            `time_created` datetime DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `path` (`path`,`locale`)
+        )");
+    }
 
     public function install(){
         $this->registerEvents();
@@ -42,7 +54,12 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->registerController('Frontend', 'stylaApi');
         $this->registerController('Frontend', 'magazin');
         $this->registerController('Frontend', 'stylapluginversion');
+        $this->createDbTables();
         return true;
+    }
+
+    public function afterInit() {
+        $this->registerCustomModels();
     }
 
     protected function createConfigForm(){
