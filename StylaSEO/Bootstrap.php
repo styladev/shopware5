@@ -58,10 +58,6 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         return true;
     }
 
-    public function afterInit() {
-        $this->registerCustomModels();
-    }
-
     protected function createConfigForm(){
         $form = $this->Form();
 
