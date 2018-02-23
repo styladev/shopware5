@@ -19,7 +19,12 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
     }
 
     public function fetchLatestTimeUpdated(){
-        return '1483278406'; // TODO: use real value
+        $lastUpdatedQuery = "SELECT time_updated FROM s_styla_seo_content ORDER BY time_updated DESC LIMIT 1";
+        $queryResult = Shopware()->Db()->fetchAll($lastUpdatedQuery);
+        if (count($queryResult) > 0){
+            return strtotime($queryResult[0]['time_updated']);
+        }
+        return 0;
     }
 
     public function escapeHtml($html) {
