@@ -10,12 +10,15 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         $api = $config->get('styla_modular_content_api');
         $locale = $this->getCurrentLocale();
         $storiesObj = json_decode($this->fetchStories($api, $username));
-
+        $processedCount = 0;
         foreach($storiesObj->stories as $singleStory){
             $path = 'story/' . ltrim($singleStory->externalPermalink, '/');
             $seoContent = StylaUtils::getRemoteContent($username, $path, '', rtrim($seo_url, '/') . '/', false);
-            $result = $this->updateStory($locale, $path, $this->escapeHtml($seoContent['noscript_content']));
+            if ($this->updateStory($locale, $path, $this->escapeHtml($seoContent['noscript_content']))){
+                $processedCount++;
+            }
         }
+        $this->View()->assign('processedCount', $processedCount);
     }
 
     public function fetchLatestTimeUpdated(){
@@ -52,9 +55,9 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
     }
 
     public function fetchStories($api, $username){
+        $this->View()->assign('lastUpdated', $this->fetchLatestTimeUpdated());
         $fetchUrl = rtrim($api, '/') . '/api/feeds/all?offset=0&limit=5&domain=' . $username . '&timeLastUpdatedEpoch=' . $this->fetchLatestTimeUpdated(); //TODO create a method for URL building
         $response = $this->makeCurlCall($fetchUrl);
-        // $this->View()->assign('stories', $response);
         return $response;
     }
 
