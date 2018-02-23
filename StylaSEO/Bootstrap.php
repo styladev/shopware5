@@ -36,16 +36,20 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     }
 
     public function createDbTables(){
-        Shopware()->Db()->query("CREATE TABLE s_styla_seo_content (
-            `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-            `path` varchar(255) DEFAULT NULL,
-            `locale` varchar(10) DEFAULT NULL,
-            `content` text,
-            `time_updated` datetime DEFAULT NULL,
-            `time_created` datetime DEFAULT NULL,
-            PRIMARY KEY (`id`),
-            UNIQUE KEY `path` (`path`,`locale`)
-        )");
+        $tableNames = array("s_styla_seo_content");
+        $schemaManager = Shopware()->Container()->get('models')->getConnection()->getSchemaManager();
+        if (!$schemaManager->tablesExist($tableNames)) {
+            Shopware()->Db()->query("CREATE TABLE s_styla_seo_content (
+                `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                `path` varchar(255) DEFAULT NULL,
+                `locale` varchar(10) DEFAULT NULL,
+                `content` text,
+                `time_updated` datetime DEFAULT NULL,
+                `time_created` datetime DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                UNIQUE KEY `path` (`path`,`locale`)
+            )");
+        }
     }
 
     public function install(){
@@ -54,6 +58,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->registerController('Frontend', 'stylaApi');
         $this->registerController('Frontend', 'magazin');
         $this->registerController('Frontend', 'stylapluginversion');
+        $this->registerController('Frontend', 'stylaseoupdate');
         $this->createDbTables();
         return true;
     }
@@ -61,28 +66,40 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     protected function createConfigForm(){
         $form = $this->Form();
 
-        // Amazine settings
         $form->setElement('text', 'styla_username', array(
             'label' => 'Styla Magazine ID',
             'required' => true,
+            'value' => 'ci-shopware5', // TODO: change this to live api
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_seo_url', array(
             'label' => 'Styla SEO Server URL',
             'required' => true,
-            'value' => 'http://seo.styla.com/',
+            'value' => 'http://seoapi.stage.eu.magalog.net', // TODO: change this to live api
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_api_url', array(
             'label' => 'Styla API Server URL',
             'required' => true,
-            'value' => 'http://live.styla.com/',
+            'value' => 'http://client-scripts.stage.eu.magalog.net', // TODO: change this to live api
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_basedir', array(
             'label' => 'Styla Base Folder',
             'required' => true,
             'value' => 'magazine',
+            'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
+        ));
+        $form->setElement('text', 'styla_modular_content_username', array(
+            'label' => 'Styla Modular Content ID',
+            'required' => true,
+            'value' => 'ci-shopware5', // TODO: change this to live api
+            'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
+        ));
+        $form->setElement('text', 'styla_modular_content_api', array(
+            'label' => 'Styla Modular Content Api',
+            'required' => true,
+            'value' => 'http://backend-storyapi.stage.eu.magalog.net/', // TODO: change this to live api
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
     }
@@ -93,6 +110,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_Magazin', 'onGetControllerPathFrontend');
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaApi', 'onGetControllerPathFrontend');
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaPluginVersion', 'onGetControllerPathFrontend');
+        $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaSeoUpdate', 'onGetControllerPathFrontend');
 
         return array(
             'success' => true,
@@ -111,10 +129,11 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 		    $controller	= 'magazin';
         } else if( ($request->getRequestUri() == '/styla-plugin-version' || strpos($request->getRequestUri(), '/styla-plugin-version/') !== false) ) {
 		    $controller	= 'stylapluginversion';
-	    } else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
+        } else if( ($request->getRequestUri() == '/stylaapi/update' || strpos($request->getRequestUri(), '/stylaapi/update/') !== false) ) {
+            $controller	= 'stylaseoupdate';
+        } else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
             $controller = 'stylaapi';
-        }
-        else {
+        } else {
             return;
         }
 
@@ -152,6 +171,9 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         }
 	    else if ($url == '/styla-plugin-version' || strpos($url, '/styla-plugin-version/') !== false) {
             return $this->Path() . 'Controllers/Frontend/StylaPluginVersion.php';
+        }
+        else if ($url == '/stylaapi/update' || strpos($url, '/stylaapi/update') !== false) {
+            return $this->Path() . 'Controllers/Frontend/StylaSeoUpdate.php';
         }
         else {
             return $this->Path() . 'Controllers/Frontend/StylaApi.php';
