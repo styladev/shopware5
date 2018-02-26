@@ -107,6 +107,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     protected function registerEvents(){
         $this->subscribeEvent('Enlight_Controller_Front_PreDispatch', 'onPreDispatch');
         $this->subscribeEvent('Enlight_Controller_Front_PostDispatch', 'onPostDispatch');
+        $this->subscribeEvent('Enlight_Controller_Action_PostDispatchSecure_Frontend', 'onGetControllerPathDetail');
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_Magazin', 'onGetControllerPathFrontend');
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaApi', 'onGetControllerPathFrontend');
         $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaPluginVersion', 'onGetControllerPathFrontend');
@@ -184,6 +185,16 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->Application()->Template()->addTemplateDir(
             $this->Path() . 'Views/', 'styla'
         );
+    }
+
+    public function onGetControllerPathDetail(Enlight_Event_EventArgs $args){
+        $args->getSubject()->View()->assign('styla_content', 'this works!');
+        // $template = \Enlight_Class::Instance('Enlight_Template_Manager');
+        // $template->registerPlugin('function', 'stylaload', [&$this, 'stylaLoadParams']);
+    }
+
+    public function stylaLoadParams($productId){
+        echo "Inside stylaLoadParams";
     }
 
 
