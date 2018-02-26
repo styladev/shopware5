@@ -2,6 +2,7 @@
 
 class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Action {
     // TODO consider 30 seconds max execution time
+    // TODO: set document type of response to JSON
     public function indexAction(){
         $Bootstrap = new Shopware_Plugins_Frontend_StylaSEO_Bootstrap;
         $config = Enlight_Application::Instance()->Bootstrap()->Config();
@@ -45,10 +46,10 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
     public function updateStory ($locale, $path, $content) {
         $result = $this->selectStories($locale, $path);
             if (count($result) > 0){
-                $query = "UPDATE s_styla_seo_content SET `content` = '$content', `time_updated` = now() WHERE `locale` = '$locale' AND `path` = '$path'";
+                $query = "UPDATE s_styla_seo_content SET `content` = '$content', `time_updated` = now() WHERE `locale` = '$locale' AND `path` = '$path'"; //TODO: use last update from endpoint instead of now
             }
             else {
-                $query = "INSERT INTO s_styla_seo_content (`path`, `locale`, `content`, `time_updated`, `time_created`) VALUES  ('$path', '$locale', '$content', now(), now())";
+                $query = "INSERT INTO s_styla_seo_content (`path`, `locale`, `content`, `time_updated`, `time_created`) VALUES  ('$path', '$locale', '$content', now(), now())"; //TODO: use last update from endpoint instead of now
             }
         $queryResult = Shopware()->Db()->query($query);
         return $query;

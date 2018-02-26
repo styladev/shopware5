@@ -1,2 +1,4 @@
-Last Updated Timestamp: {$lastUpdated}
-Processed Stories: {$processedCount}
+{
+    "last_updated": "{$lastUpdated}",
+    "processed_stories": "{$processedCount}"
+}
