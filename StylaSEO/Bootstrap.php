@@ -194,7 +194,16 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     }
 
     public function stylaLoadParams($productId){
-        echo "Inside stylaLoadParams";
+        $shopContext = $this->get('shopware_storefront.context_service')->getShopContext();
+        $lang = $shopContext->getShop()->getLocale()->getLocale();
+        $slug = 'story/' . $productId;
+        $query = "SELECT * FROM s_styla_seo_content WHERE locale = '" . $lang . "' AND path = '" . $slug . "'";
+        $queryResult = Shopware()->Db()->fetchAll($query);
+        $html = "";
+        if (count($queryResult) > 0){
+            $html = html_entity_decode($queryResult[0]['content']);
+        }
+        return $html;
     }
 
 

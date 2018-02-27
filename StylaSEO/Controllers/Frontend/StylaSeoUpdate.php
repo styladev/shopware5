@@ -10,14 +10,19 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         $seo_url = $config->get('styla_seo_url');
         $api = $config->get('styla_modular_content_api');
         $locale = $this->getCurrentLocale();
-        $storiesObj = json_decode($this->fetchStories($api, $username));
+        $storyList = json_decode($this->fetchStories($api, $username));
         $processedCount = 0;
-        foreach($storiesObj->stories as $singleStory){
-            $path = 'story/' . ltrim($singleStory->externalPermalink, '/');
+        $countStories = 1;
+        foreach($storyList as $singleStory){
+            if ($countStories > 2){
+                break;
+            }
+            $path = 'story/' . ltrim($singleStory->slug, '/');
             $seoContent = StylaUtils::getRemoteContent($username, $path, '', rtrim($seo_url, '/') . '/', false);
-            if ($this->updateStory($locale, $path, $this->escapeHtml($seoContent['noscript_content']))){
+            if ($this->updateStory($locale, $path, $this->escapeHtml($seoContent['noscript_content']), $singleStory->timeLastUpdated)){
                 $processedCount++;
             }
+            $countStories++;
         }
         $this->View()->assign('processedCount', $processedCount);
     }
@@ -43,13 +48,13 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         return $queryResult;
     }
 
-    public function updateStory ($locale, $path, $content) {
+    public function updateStory ($locale, $path, $content, $timeLastUpdated) {
         $result = $this->selectStories($locale, $path);
             if (count($result) > 0){
-                $query = "UPDATE s_styla_seo_content SET `content` = '$content', `time_updated` = now() WHERE `locale` = '$locale' AND `path` = '$path'"; //TODO: use last update from endpoint instead of now
+                $query = "UPDATE s_styla_seo_content SET `content` = '$content', `time_updated` = '" . $this->timestampToDate($timeLastUpdated)  . "' WHERE `locale` = '$locale' AND `path` = '$path'"; //TODO: use last update from endpoint instead of now
             }
             else {
-                $query = "INSERT INTO s_styla_seo_content (`path`, `locale`, `content`, `time_updated`, `time_created`) VALUES  ('$path', '$locale', '$content', now(), now())"; //TODO: use last update from endpoint instead of now
+                $query = "INSERT INTO s_styla_seo_content (`path`, `locale`, `content`, `time_updated`, `time_created`) VALUES  ('$path', '$locale', '$content', '" . $this->timestampToDate($timeLastUpdated)  . "', now())"; //TODO: use last update from endpoint instead of now
             }
         $queryResult = Shopware()->Db()->query($query);
         return $query;
@@ -57,7 +62,7 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
 
     public function fetchStories($api, $username){
         $this->View()->assign('lastUpdated', $this->fetchLatestTimeUpdated());
-        $fetchUrl = rtrim($api, '/') . '/api/feeds/all?offset=0&limit=5&domain=' . $username . '&timeLastUpdatedEpoch=' . $this->fetchLatestTimeUpdated(); //TODO create a method for URL building
+        $fetchUrl = rtrim($api, '/') . '/api/delta/stories?domain=' . $username . '&timeLastUpdatedEpoch=' . $this->fetchLatestTimeUpdated(); //TODO create a method for URL building
         $response = $this->makeCurlCall($fetchUrl);
         return $response;
     }
@@ -80,6 +85,10 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         $shopContext = $this->get('shopware_storefront.context_service')->getShopContext();
         $lang = $shopContext->getShop()->getLocale()->getLocale();
         return $lang;
+    }
+
+    public function timestampToDate($timestamp){
+        return date('Y-m-d H:i:s', $timestamp);
     }
 
     // TODO: remove this function - only used for debugging
