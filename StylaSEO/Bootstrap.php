@@ -188,16 +188,20 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     }
 
     public function onGetControllerPathDetail(Enlight_Event_EventArgs $args){
-        $args->getSubject()->View()->assign('styla_content', 'this works!');
-        // $template = \Enlight_Class::Instance('Enlight_Template_Manager');
-        // $template->registerPlugin('function', 'stylaload', [&$this, 'stylaLoadParams']);
+        print_r($args->getSubject()->View());
+        $args->getSubject()->View()->assign('styla_content', $this->stylaLoadContent('pie')); // TODO: make this dynamic
     }
 
-    public function stylaLoadParams($productId){
+    public function onGetControllerPathDetail2(Enlight_Event_EventArgs $args){
+        $template = \Enlight_Class::Instance('Enlight_Template_Manager');
+        $template->registerPlugin('function', 'stylaload', [&$this, 'stylaLoadContent']);
+    }
+
+    public function stylaLoadContent($productId){
         $shopContext = $this->get('shopware_storefront.context_service')->getShopContext();
         $lang = $shopContext->getShop()->getLocale()->getLocale();
-        $slug = 'story/' . $productId;
-        $query = "SELECT * FROM s_styla_seo_content WHERE locale = '" . $lang . "' AND path = '" . $slug . "'";
+        $path = 'story/' . $productId;
+        $query = "SELECT * FROM s_styla_seo_content WHERE locale = '" . $lang . "' AND path = '" . $path . "'";
         $queryResult = Shopware()->Db()->fetchAll($query);
         $html = "";
         if (count($queryResult) > 0){
