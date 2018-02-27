@@ -188,7 +188,6 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     }
 
     public function onGetControllerPathDetail(Enlight_Event_EventArgs $args){
-        print_r($args->getSubject()->View());
         $args->getSubject()->View()->assign('styla_content', $this->stylaLoadContent('pie')); // TODO: make this dynamic
     }
 
