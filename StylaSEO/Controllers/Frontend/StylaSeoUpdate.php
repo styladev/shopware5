@@ -14,22 +14,30 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         $processedCount = 0;
         $cachedStories = $this->countStories();
         $countStories = 1;
-        foreach($storyList as $singleStory){
-            if ($countStories > 2){
-                break;
-            }
-            $path = 'story/' . ltrim($singleStory->slug, '/');
-            $seoContent = StylaUtils::getRemoteContent($username, $path, '', rtrim($seo_url, '/') . '/', false);
-            if ($this->updateStory($locale, $path, $this->escapeHtml($seoContent['noscript_content']), $singleStory->timeLastUpdatedEpoch)){
+        try {
+            foreach($storyList as $singleStory){
+                if ($countStories > 2){
+                    break;
+                }
+                $path = 'story/' . ltrim($singleStory->slug, '/');
+                $seoContent = StylaUtils::getRemoteContent($username, $path, '', rtrim($seo_url, '/') . '/', false);
+                $this->updateStory($locale, $path, $this->escapeHtml($seoContent['noscript_content']), $singleStory->timeLastUpdatedEpoch);
                 $processedCount++;
+                $countStories++;
             }
-            $countStories++;
+            $this->assignViewVariables($singleStory->timeLastUpdatedEpoch, $processedCount, $cachedStories + $processedCount, $path);
+        } catch (Exception $e) {
+            $this->assignViewVariables($singleStory->timeLastUpdatedEpoch, $processedCount, $cachedStories + $processedCount, $path, $e->getMessage());
         }
-        $totalStories = $cachedStories + $processedCount;
-        $this->View()->assign('lastUpdated', $singleStory->timeLastUpdatedEpoch);
+
+    }
+
+    public function assignViewVariables($lastUpdated, $processedCount, $totalStories, $lastCachedPath, $error=""){
+        $this->View()->assign('lastUpdated', $lastUpdated);
         $this->View()->assign('processedCount', $processedCount);
         $this->View()->assign('totalStories', $totalStories);
-        $this->View()->assign('lastCachedPath', $path);
+        $this->View()->assign('lastCachedPath', $lastCachedPath);
+        $this->View()->assign('error', $error);
     }
 
     public function fetchLatestTimeUpdated(){
@@ -59,16 +67,18 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         return $queryResult;
     }
 
-    public function updateStory ($locale, $path, $content, $timeLastUpdated) {
+    public function updateStory($locale, $path, $content, $timeLastUpdated) {
+        if (empty(trim($content))){
+            throw new Exception('Seo content should not be empty');
+        }
         $result = $this->selectStories($locale, $path);
-            if (count($result) > 0){
-                $query = "UPDATE s_styla_seo_content SET `content` = '$content', `time_updated` = '" . $this->timestampToDate($timeLastUpdated)  . "' WHERE `locale` = '$locale' AND `path` = '$path'"; //TODO: use last update from endpoint instead of now
-            }
-            else {
-                $query = "INSERT INTO s_styla_seo_content (`path`, `locale`, `content`, `time_updated`, `time_created`) VALUES  ('$path', '$locale', '$content', '" . $this->timestampToDate($timeLastUpdated)  . "', now())"; //TODO: use last update from endpoint instead of now
-            }
+        if (count($result) > 0){
+            $query = "UPDATE s_styla_seo_content SET `content` = '$content', `time_updated` = '" . $this->timestampToDate($timeLastUpdated)  . "' WHERE `locale` = '$locale' AND `path` = '$path'"; //TODO: use last update from endpoint instead of now
+        }
+        else {
+            $query = "INSERT INTO s_styla_seo_content (`path`, `locale`, `content`, `time_updated`, `time_created`) VALUES  ('$path', '$locale', '$content', '" . $this->timestampToDate($timeLastUpdated)  . "', now())"; //TODO: use last update from endpoint instead of now
+        }
         $queryResult = Shopware()->Db()->query($query);
-        return $query;
     }
 
     public function fetchStories($api, $username){
