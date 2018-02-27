@@ -12,6 +12,7 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         $locale = $this->getCurrentLocale();
         $storyList = json_decode($this->fetchStories($api, $username));
         $processedCount = 0;
+        $cachedStories = $this->countStories();
         $countStories = 1;
         foreach($storyList as $singleStory){
             if ($countStories > 2){
@@ -24,8 +25,11 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
             }
             $countStories++;
         }
-        $this->View()->assign('processedCount', $processedCount);
+        $totalStories = $cachedStories + $processedCount;
         $this->View()->assign('lastUpdated', $singleStory->timeLastUpdatedEpoch);
+        $this->View()->assign('processedCount', $processedCount);
+        $this->View()->assign('totalStories', $totalStories);
+        $this->View()->assign('lastCachedPath', $path);
     }
 
     public function fetchLatestTimeUpdated(){
@@ -46,6 +50,12 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
     public function selectStories($locale, $path) {
         $seoQuery = "SELECT * FROM s_styla_seo_content WHERE locale = '" . $locale . "' AND path = '" . $path . "'";
         $queryResult = Shopware()->Db()->fetchAll($seoQuery);
+        return $queryResult;
+    }
+
+    public function countStories() {
+        $seoQuery = "SELECT COUNT(*) as total FROM s_styla_seo_content";
+        $queryResult = Shopware()->Db()->fetchOne($seoQuery);
         return $queryResult;
     }
 

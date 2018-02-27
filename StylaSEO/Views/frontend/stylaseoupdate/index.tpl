@@ -1,4 +1,6 @@
 {
-    "last_updated": "{$lastUpdated}",
-    "processed_stories": "{$processedCount}"
+    "last_updated": {$lastUpdated},
+    "processed_stories": {$processedCount},
+    "total_stories": {$totalStories},
+    "last_cached_path": "{$lastCachedPath}"
 }
