@@ -19,7 +19,7 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
             }
             $path = 'story/' . ltrim($singleStory->slug, '/');
             $seoContent = StylaUtils::getRemoteContent($username, $path, '', rtrim($seo_url, '/') . '/', false);
-            if ($this->updateStory($locale, $path, $this->escapeHtml($seoContent['noscript_content']), $singleStory->timeLastUpdated)){
+            if ($this->updateStory($locale, $path, $this->escapeHtml($seoContent['noscript_content']), $singleStory->timeLastUpdatedEpoch)){
                 $processedCount++;
             }
             $countStories++;
