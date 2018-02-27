@@ -25,6 +25,7 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
             $countStories++;
         }
         $this->View()->assign('processedCount', $processedCount);
+        $this->View()->assign('lastUpdated', $singleStory->timeLastUpdatedEpoch);
     }
 
     public function fetchLatestTimeUpdated(){
@@ -61,7 +62,6 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
     }
 
     public function fetchStories($api, $username){
-        $this->View()->assign('lastUpdated', $this->fetchLatestTimeUpdated());
         $fetchUrl = rtrim($api, '/') . '/api/delta/stories?domain=' . $username . '&timeLastUpdatedEpoch=' . $this->fetchLatestTimeUpdated(); //TODO create a method for URL building
         $response = $this->makeCurlCall($fetchUrl);
         return $response;
