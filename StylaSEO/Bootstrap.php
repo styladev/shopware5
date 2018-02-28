@@ -126,13 +126,13 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->_styla_username = $this->Config()->get('styla_username');
         $this->_magazin_basedir = $this->Config()->get('styla_basedir', 'magazine');
 
-        if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
+        if (strpos($request->getRequestUri(), $this->_magazin_basedir) !== false){
 		    $controller	= 'magazin';
-        } else if( ($request->getRequestUri() == '/styla-plugin-version' || strpos($request->getRequestUri(), '/styla-plugin-version/') !== false) ) {
+        } else if(strpos($request->getRequestUri(), '/styla-plugin-version') !== false) {
 		    $controller	= 'stylapluginversion';
-        } else if( ($request->getRequestUri() == '/stylaapi/update' || strpos($request->getRequestUri(), '/stylaapi/update/') !== false) ) {
+        } else if(strpos($request->getRequestUri(), '/stylaapi/update') !== false){
             $controller	= 'stylaseoupdate';
-        } else if( ($request->getRequestUri() == '/stylaapi' || strpos($request->getRequestUri(), '/stylaapi/') !== false) ) {
+        } else if(strpos($request->getRequestUri(), '/stylaapi') !== false) {
             $controller = 'stylaapi';
         } else {
             return;
@@ -165,20 +165,21 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     }
 
     public function onGetControllerPathFrontend(Enlight_Event_EventArgs $args){
-        $request = $args->getRequest();
-        $url = strtok($request->getRequestUri(),'?');
-        if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
-            return $this->Path() . 'Controllers/Frontend/Magazin.php';
-        }
-	    else if ($url == '/styla-plugin-version' || strpos($url, '/styla-plugin-version/') !== false) {
-            return $this->Path() . 'Controllers/Frontend/StylaPluginVersion.php';
-        }
-        else if ($url == '/stylaapi/update' || strpos($url, '/stylaapi/update') !== false) {
-            return $this->Path() . 'Controllers/Frontend/StylaSeoUpdate.php';
-        }
-        else {
-            return $this->Path() . 'Controllers/Frontend/StylaApi.php';
-        }
+        // TODO: this block seems to be unused. Check why it was here in the first place.
+        // $request = $args->getRequest();
+        // $url = strtok($request->getRequestUri(),'?');
+        // if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
+        //     return $this->Path() . 'Controllers/Frontend/Magazin.php';
+        // }
+	    // else if ($url == '/styla-plugin-version' || strpos($url, '/styla-plugin-version/') !== false) {
+        //     return $this->Path() . 'Controllers/Frontend/StylaPluginVersion.php';
+        // }
+        // else if ($url == '/stylaapi/update' || strpos($url, '/stylaapi/update') !== false) {
+        //     return $this->Path() . 'Controllers/Frontend/StylaSeoUpdate.php';
+        // }
+        // else {
+        //     return $this->Path() . 'Controllers/Frontend/StylaApi.php';
+        // }
     }
 
     protected function registerTemplateDir(){

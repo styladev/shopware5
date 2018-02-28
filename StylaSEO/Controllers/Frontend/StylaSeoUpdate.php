@@ -13,10 +13,11 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         $storyList = json_decode($this->fetchStories($api, $username));
         $processedCount = 0;
         $cachedStories = $this->countStories();
+        $limit = $this->getLimit($this->Request()->getParam('limit'));
         $countStories = 1;
         try {
             foreach($storyList as $singleStory){
-                if ($countStories > 2){
+                if ($countStories > $limit){
                     break;
                 }
                 $path = 'story/' . ltrim($singleStory->slug, '/');
@@ -32,12 +33,25 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
 
     }
 
-    public function assignViewVariables($lastUpdated, $processedCount, $totalStories, $lastCachedPath, $error=""){
+    public function assignViewVariables($lastUpdated=0, $processedCount, $totalStories, $lastCachedPath, $error=""){
         $this->View()->assign('lastUpdated', $lastUpdated);
         $this->View()->assign('processedCount', $processedCount);
         $this->View()->assign('totalStories', $totalStories);
         $this->View()->assign('lastCachedPath', $lastCachedPath);
         $this->View()->assign('error', $error);
+    }
+
+    public function getLimit($limitParam){
+        if (!is_numeric($limitParam) || $limitParam < 2){
+            return 2;
+        }
+        if ($limitParam > 25){
+            return 25;
+        }
+        if ($limitParam > 2 && $limitParam <= 25){
+            return $limitParam;
+        }
+        return 2;
     }
 
     public function fetchLatestTimeUpdated(){
