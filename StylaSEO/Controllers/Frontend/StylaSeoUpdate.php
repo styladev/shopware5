@@ -14,7 +14,12 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         $processedCount = 0;
         $cachedStories = $this->countStories();
         $limit = $this->getLimit($this->Request()->getParam('limit'));
+        $recacheall = $this->Request()->getParam('recacheall');
         $countStories = 1;
+        if ($recacheall){
+            $this->recacheAll();
+            return;
+        }
         try {
             foreach($storyList as $singleStory){
                 if ($countStories > $limit){
@@ -38,7 +43,7 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         $this->View()->assign('processedCount', $processedCount);
         $this->View()->assign('totalStories', $totalStories);
         $this->View()->assign('lastCachedPath', $lastCachedPath);
-        $this->View()->assign('error', $error);
+        $this->View()->assign('error', htmlentities($error));
     }
 
     public function getLimit($limitParam){
@@ -92,6 +97,11 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         else {
             $query = "INSERT INTO s_styla_seo_content (`path`, `locale`, `content`, `time_updated`, `time_created`) VALUES  ('$path', '$locale', '$content', '" . $this->timestampToDate($timeLastUpdated)  . "', now())"; //TODO: use last update from endpoint instead of now
         }
+        $queryResult = Shopware()->Db()->query($query);
+    }
+
+    public function recacheAll() {
+        $query = "UPDATE s_styla_seo_content SET `time_updated` = '0'";
         $queryResult = Shopware()->Db()->query($query);
     }
 

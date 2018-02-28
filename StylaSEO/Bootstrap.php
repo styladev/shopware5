@@ -108,10 +108,6 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->subscribeEvent('Enlight_Controller_Front_PreDispatch', 'onPreDispatch');
         $this->subscribeEvent('Enlight_Controller_Front_PostDispatch', 'onPostDispatch');
         $this->subscribeEvent('Enlight_Controller_Action_PostDispatchSecure_Frontend', 'onGetControllerPathDetail');
-        $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_Magazin', 'onGetControllerPathFrontend');
-        $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaApi', 'onGetControllerPathFrontend');
-        $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaPluginVersion', 'onGetControllerPathFrontend');
-        $this->subscribeEvent('Enlight_Controller_Dispatcher_ControllerPath_Frontend_StylaSeoUpdate', 'onGetControllerPathFrontend');
 
         return array(
             'success' => true,
@@ -164,24 +160,6 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         }
     }
 
-    public function onGetControllerPathFrontend(Enlight_Event_EventArgs $args){
-        // TODO: this block seems to be unused. Check why it was here in the first place.
-        // $request = $args->getRequest();
-        // $url = strtok($request->getRequestUri(),'?');
-        // if ($url == '/'.$this->_magazin_basedir || strpos($url, '/'.$this->_magazin_basedir.'/') !== false){
-        //     return $this->Path() . 'Controllers/Frontend/Magazin.php';
-        // }
-	    // else if ($url == '/styla-plugin-version' || strpos($url, '/styla-plugin-version/') !== false) {
-        //     return $this->Path() . 'Controllers/Frontend/StylaPluginVersion.php';
-        // }
-        // else if ($url == '/stylaapi/update' || strpos($url, '/stylaapi/update') !== false) {
-        //     return $this->Path() . 'Controllers/Frontend/StylaSeoUpdate.php';
-        // }
-        // else {
-        //     return $this->Path() . 'Controllers/Frontend/StylaApi.php';
-        // }
-    }
-
     protected function registerTemplateDir(){
         $this->Application()->Template()->addTemplateDir(
             $this->Path() . 'Views/', 'styla'
@@ -189,7 +167,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     }
 
     public function onGetControllerPathDetail(Enlight_Event_EventArgs $args){
-        $args->getSubject()->View()->assign('styla_content', $this->stylaLoadContent('pie')); // TODO: make this dynamic
+        $args->getSubject()->View()->assign('styla_content', $this->stylaLoadContent('member-boards-only')); // TODO: make this dynamic
     }
 
     public function onGetControllerPathDetail2(Enlight_Event_EventArgs $args){
