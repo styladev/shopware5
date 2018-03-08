@@ -11,6 +11,8 @@
 {block name='frontend_index_header_meta_tags_opengraph'}
 		{$sCustomPage.head_content}
 {/block}
+{block name='frontend_index_header_canonical'}
+{/block}
 
 {* Newly added 151008 *}
 {block name="frontend_index_header_favicons"}{/block}
