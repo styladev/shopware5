@@ -38,7 +38,7 @@ class StylaUtils{
         return $query;
     }
 
-    public static function getRemoteContent($username, $path, $query_params, $src_url = null){
+    public static function getRemoteContent($username, $path, $query_params, $src_url = null, $caching_enabled=true){
         $cache = Shopware()->Cache();
         $config = Shopware()->Config();
 
@@ -52,7 +52,7 @@ class StylaUtils{
 
         $cache_key = self::getCacheKey($url);
 
-        if (!empty($config->caching)) {
+        if ($caching_enabled && !empty($config->caching)) {
             if (!$cache->test($cache_key)) {
                 $arr = self::_loadRemoteContent($url, $query_params);
                 if(!$arr)
