@@ -69,19 +69,18 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $form->setElement('text', 'styla_username', array(
             'label' => 'Styla Magazine ID',
             'required' => true,
-            'value' => 'ci-shopware5', // TODO: change this to live api
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_seo_url', array(
             'label' => 'Styla SEO Server URL',
             'required' => true,
-            'value' => 'http://seoapi.stage.eu.magalog.net', // TODO: change this to live api
+            'value' => 'http://seoapi.styla.com',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_api_url', array(
             'label' => 'Styla API Server URL',
             'required' => true,
-            'value' => 'http://client-scripts.stage.eu.magalog.net', // TODO: change this to live api
+            'value' => 'http://client-scripts.styla.com',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_basedir', array(
@@ -92,14 +91,12 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         ));
         $form->setElement('text', 'styla_modular_content_username', array(
             'label' => 'Styla Modular Content ID',
-            'required' => true,
-            'value' => 'ci-shopware5', // TODO: change this to live api
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_modular_content_api', array(
             'label' => 'Styla Modular Content Api',
             'required' => true,
-            'value' => 'http://backend-storyapi.stage.eu.magalog.net/', // TODO: change this to live api
+            'value' => 'http://live.styla.com',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
     }
@@ -168,13 +165,15 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     }
 
     public function onGetControllerPathDetail(Enlight_Event_EventArgs $args){
-        $controller = $args->getSubject();
-        $request = $controller->Request();
-        $view = $controller->View();
+        if ($this->Config()->get('styla_modular_content_username')) {
+            $controller = $args->getSubject();
+            $request = $controller->Request();
+            $view = $controller->View();
 
-        if ($request->getControllerName() == 'detail'){
-            $article = $view->getAssign('sArticle');
-            $view->assign('styla_seo_content',  $this->stylaLoadContent('story/' . $article['articleID']));
+            if ($request->getControllerName() == 'detail'){
+                $article = $view->getAssign('sArticle');
+                $view->assign('styla_seo_content',  $this->stylaLoadContent('story/' . $article['articleID']));
+            }
         }
     }
 
@@ -182,7 +181,6 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $shopContext = $this->get('shopware_storefront.context_service')->getShopContext();
         $lang = $shopContext->getShop()->getLocale()->getLocale();
         $query = "SELECT * FROM s_styla_seo_content WHERE locale = '" . $lang . "' AND path = '" . $path . "'";
-        echo $query;
         $queryResult = Shopware()->Db()->fetchAll($query);
         $html = "";
         if (count($queryResult) > 0){
