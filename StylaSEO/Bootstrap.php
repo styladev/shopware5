@@ -107,7 +107,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     protected function registerEvents(){
         $this->subscribeEvent('Enlight_Controller_Front_PreDispatch', 'onPreDispatch');
         $this->subscribeEvent('Enlight_Controller_Front_PostDispatch', 'onPostDispatch');
-        $this->subscribeEvent('Enlight_Controller_Action_PostDispatchSecure_Frontend', 'onGetControllerPathDetail');
+        $this->subscribeEvent('Enlight_Controller_Action_PostDispatchSecure_Frontend_Detail', 'onGetControllerPathDetail');
 
         return array(
             'success' => true,
@@ -141,7 +141,6 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         require_once $this->Path() . 'Components/Styla/Utils.php';
         require_once $this->Path() . 'Components/Styla/Curl.php';
 
-        $this->registerTemplateDir();
         $request->setControllerName($controller);
         if ($controller === 'stylaapi') {
             $request->setActionName(StylaUtils::getActionFromUrl());
@@ -155,6 +154,8 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $request = $action->Request();
         $response = $action->Response();
 
+        $this->registerTemplateDir();
+
         if(!$request->isDispatched()||$response->isException()||$request->getModuleName()!='frontend') {
             return;
         }
@@ -162,24 +163,26 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
     protected function registerTemplateDir(){
         $this->Application()->Template()->addTemplateDir(
-            $this->Path() . 'Views/', 'styla'
+            $this->Path() . 'Views/'
         );
     }
 
     public function onGetControllerPathDetail(Enlight_Event_EventArgs $args){
-        $args->getSubject()->View()->assign('styla_content', $this->stylaLoadContent('member-boards-only')); // TODO: make this dynamic
+        $controller = $args->getSubject();
+        $request = $controller->Request();
+        $view = $controller->View();
+
+        if ($request->getControllerName() == 'detail'){
+            $article = $view->getAssign('sArticle');
+            $view->assign('styla_seo_content',  $this->stylaLoadContent('story/' . $article['articleID']));
+        }
     }
 
-    public function onGetControllerPathDetail2(Enlight_Event_EventArgs $args){
-        $template = \Enlight_Class::Instance('Enlight_Template_Manager');
-        $template->registerPlugin('function', 'stylaload', [&$this, 'stylaLoadContent']);
-    }
-
-    public function stylaLoadContent($productId){
+    public function stylaLoadContent($path){
         $shopContext = $this->get('shopware_storefront.context_service')->getShopContext();
         $lang = $shopContext->getShop()->getLocale()->getLocale();
-        $path = 'story/' . $productId;
         $query = "SELECT * FROM s_styla_seo_content WHERE locale = '" . $lang . "' AND path = '" . $path . "'";
+        echo $query;
         $queryResult = Shopware()->Db()->fetchAll($query);
         $html = "";
         if (count($queryResult) > 0){

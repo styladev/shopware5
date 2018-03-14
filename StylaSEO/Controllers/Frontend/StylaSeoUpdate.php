@@ -135,7 +135,6 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         return date('Y-m-d H:i:s', $timestamp);
     }
 
-    // TODO: remove this function - only used for debugging
     public function kprint($var){
         echo '<pre>';
         print_r($var);
