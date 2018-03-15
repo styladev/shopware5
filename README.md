@@ -1,7 +1,6 @@
-# Styla SEO Enhancements Shopware Module (v5.3.0)
+# Styla SEO Enhancements Shopware Module (v5.3.1)
 #### Author: Mark Mulder (BSolut GmbH)
 #### Contributor: Sebastian Sachtleben, Christian Korndoerfer, Roberto Solís, Antonio Cosentino
-#### Last updated: 18.01.2018
 
 Styla Magazine Plugin is a module to connect your Shopware 5 Store with [Styla](http://www.styla.com/). For our Shopware 4 plugin check this https://github.com/styladev/shopware4
 
