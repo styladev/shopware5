@@ -19,7 +19,7 @@ class Shopware_Controllers_Frontend_Stylaseoupdate extends Enlight_Controller_Ac
         $storyList = json_decode($this->fetchStories($api, $username));
 
         if (property_exists($storyList, 'success') && !$storyList->success) {
-            $this->assignViewVariables(0, 0, 0, '', 'Modular content username not valid');
+            $this->assignViewVariables(null, 0, 0, '', 'Modular content username not valid');
             return;
         }
 
@@ -43,15 +43,19 @@ class Shopware_Controllers_Frontend_Stylaseoupdate extends Enlight_Controller_Ac
                 $processedCount++;
                 $countStories++;
             }
-            $this->assignViewVariables($singleStory->timeLastUpdatedEpoch, $processedCount, $cachedStories + $processedCount, $path);
+            $this->assignViewVariables($singleStory, $processedCount, $cachedStories + $processedCount, $path);
         } catch (Exception $e) {
-            $this->assignViewVariables($singleStory->timeLastUpdatedEpoch, $processedCount, $cachedStories + $processedCount, $path, $e->getMessage());
+            $this->assignViewVariables($singleStory, $processedCount, $cachedStories + $processedCount, $path, $e->getMessage());
         }
 
     }
 
-    public function assignViewVariables($lastUpdated=0, $processedCount, $totalStories, $lastCachedPath, $error=""){
-        $this->View()->assign('lastUpdated', $lastUpdated);
+    public function assignViewVariables($lastStory, $processedCount, $totalStories, $lastCachedPath, $error=""){
+        $timeLastUpdatedEpoch = 0;
+        if ($lastStory) {
+            $timeLastUpdatedEpoch = $lastStory->timeLastUpdatedEpoch;
+        }
+        $this->View()->assign('lastUpdated', $timeLastUpdatedEpoch);
         $this->View()->assign('processedCount', $processedCount);
         $this->View()->assign('totalStories', $totalStories);
         $this->View()->assign('lastCachedPath', $lastCachedPath);
