@@ -1,6 +1,6 @@
 <?php
 
-class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Action {
+class Shopware_Controllers_Frontend_Stylaseoupdate extends Enlight_Controller_Action {
     // TODO consider 30 seconds max execution time
     // TODO: set document type of response to JSON
     public function indexAction(){
@@ -10,7 +10,19 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
         $seo_url = $config->get('styla_seo_url');
         $api = $config->get('styla_modular_content_api');
         $locale = $this->getCurrentLocale();
+
+        if (!$username){
+            $this->assignViewVariables(0, 0, 0, '', 'Modular content username not set');
+            return;
+        }
+
         $storyList = json_decode($this->fetchStories($api, $username));
+
+        if (property_exists($storyList, 'success') && !$storyList->success) {
+            $this->assignViewVariables(0, 0, 0, '', 'Modular content username not valid');
+            return;
+        }
+
         $processedCount = 0;
         $cachedStories = $this->countStories();
         $limit = $this->getLimit($this->Request()->getParam('limit'));
@@ -88,7 +100,7 @@ class Shopware_Controllers_Frontend_StylaSeoUpdate extends Enlight_Controller_Ac
 
     public function updateStory($locale, $path, $content, $timeLastUpdated) {
         if (empty(trim($content))){
-            throw new Exception('Seo content should not be empty');
+            throw new Exception('Seo content should not be empty for locale: ' . $locale . ' and path: '. $path);
         }
         $result = $this->selectStories($locale, $path);
         if (count($result) > 0){
