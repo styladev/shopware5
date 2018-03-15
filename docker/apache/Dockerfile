@@ -55,10 +55,10 @@ RUN composer -n install
 # Create symlink for sw-cli tools
 RUN ln -s /home/root/sw-cli-tools/bin/sw /usr/bin/sw
 
-# Copy plugin
-#COPY StylaSEO /var/www/shopware/engine/Shopware/Plugins/Local/Frontend/StylaSEO
+# Configurate apache
+ADD /docker/apache/vhosts.conf /etc/apache2/sites-enabled/000-default.conf
 
+# Install Shopware
 ADD /docker/apache/start.sh /home/root/start.sh
 RUN chmod 777 /home/root/start.sh
-
 CMD /home/root/start.sh
