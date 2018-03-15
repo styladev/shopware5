@@ -55,9 +55,10 @@ RUN composer -n install
 # Create symlink for sw-cli tools
 RUN ln -s /home/root/sw-cli-tools/bin/sw /usr/bin/sw
 
-# Install shopware5
-WORKDIR /var/www/shopware
-RUN sw install:release --release="5.4.0" --install-dir="." --shop-host="localhost" --shop-path="/" --db-host="shopware5-mysql" --db-user="app" --db-password="app" --db-name="shopware5" --admin-username="styla" --admin-password="support" --admin-name="Styla Admin" --admin-email="support@styla.com"
-
 # Copy plugin
-COPY StylaSEO /var/www/shopware/engine/Shopware/Plugins/Local/Frontend/StylaSEO
+#COPY StylaSEO /var/www/shopware/engine/Shopware/Plugins/Local/Frontend/StylaSEO
+
+ADD /docker/apache/start.sh /home/root/start.sh
+RUN chmod 777 /home/root/start.sh
+
+CMD /home/root/start.sh
