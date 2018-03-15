@@ -1,9 +1,42 @@
 FROM php:7.1-apache
 
 RUN apt-get update -qq && apt-get install -y -qq \
-    zip \
-    unzip \
-    git
+        libicu-dev \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+        libcurl4-openssl-dev \
+        software-properties-common  \
+        libcurl3 curl \
+        git \
+        zip \
+        unzip \
+        openjdk-7-jdk \
+        inotify-tools
+
+RUN apt-get update -qq && apt-get install -y -qq \
+        build-essential \
+        libxml2-dev libxslt1-dev zlib1g-dev \
+        git \
+        mysql-client \
+        sshpass \
+        nano \
+        sudo \
+        vim \
+        graphviz \
+        netcat-openbsd \
+        nodejs npm nodejs-legacy \
+        ant
+
+RUN docker-php-ext-install iconv mcrypt mbstring \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install gd \
+    && docker-php-ext-install zip \
+    && docker-php-ext-install curl \
+    && docker-php-ext-install intl \
+    && docker-php-ext-install pdo \
+    && docker-php-ext-install pdo_mysql
 
 WORKDIR /home/root
 
@@ -24,4 +57,4 @@ RUN ln -s /home/root/sw-cli-tools/bin/sw /usr/bin/sw
 
 # Install shopware5
 WORKDIR /var/www/shopware
-RUN sw install:release --release="5.4.0" --install-dir="." --shop-host="localhost" --shop-path="/" --db-host="localhost" --db-user="root" --db-password="admin" --db-name="shopware5" --admin-username="{{ shopware_config.admin_name }}" --admin-password="support" --admin-name="Styla Admin" --admin-email="support@styla.com"
+RUN sw install:release --release="5.4.0" --install-dir="." --shop-host="localhost" --shop-path="/" --db-host="localhost" --db-user="app" --db-password="app" --db-name="shopware5" --admin-username="styla" --admin-password="support" --admin-name="Styla Admin" --admin-email="support@styla.com"

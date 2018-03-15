@@ -1,5 +1,16 @@
 version: '3'
 services:
+  shopware5-mysql:
+    image: 'shopware5-mysql:local-latest'
+    build:
+      context: '.'
+      dockerfile: 'docker/mysql/Dockerfile'
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
   shopware5-apache:
     image: 'shopware5-apache:local-latest'
     build:
@@ -7,14 +18,5 @@ services:
       dockerfile: 'docker/apache/Dockerfile'
     ports:
       - 80:80
-  #shopware5-mysql:
-  #  image: 'shopware5-mysql:local-latest'
-  #  build:
-  #    context: '.'
-  #    dockerfile: 'docker/mysql/Dockerfile'
-  #  ports:
-  #    - 3306:3306
-  #  environment:
-  #    MYSQL_ROOT_PASSWORD: root
-  #    MYSQL_USER: app
-  #    MYSQL_PASSWORD: app
+    depends_on:
+      - shopware5-mysql
