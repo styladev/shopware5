@@ -18,5 +18,7 @@ services:
       dockerfile: 'docker/apache/Dockerfile'
     ports:
       - 80:80
+    volumes:
+       - ./StylaSEO:/var/www/shopware/engine/Shopware/Plugins/Local/Frontend/StylaSEO
     depends_on:
       - shopware5-mysql
