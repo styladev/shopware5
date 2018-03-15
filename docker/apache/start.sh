@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Sleep for 5 seconds to wait until mysql is up
-sleep 5
+# Sleep for 30 seconds to wait until mysql is up
+sleep 30
 
 # Install Shopware
 rm -fR /var/www/shopware
