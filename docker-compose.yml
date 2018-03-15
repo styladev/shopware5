@@ -19,6 +19,6 @@ services:
     ports:
       - 80:80
     volumes:
-       - ./StylaSEO:/var/www/shopware/engine/Shopware/Plugins/Local/Frontend/StylaSEO
+       - ./StylaSEO:/home/root/StylaSEO
     depends_on:
       - shopware5-mysql
