@@ -20,8 +20,8 @@ WORKDIR /home/root/sw-cli-tools
 RUN composer -n install
 
 # Create symlink for sw-cli tools
-RUN ln -s bin/sw /usr/bin/sw
+RUN ln -s /home/root/sw-cli-tools/bin/sw /usr/bin/sw
 
 # Install shopware5
 WORKDIR /var/www/shopware
-RUN sw install:release --release="5.4.0" --install-dir="." --shop-host="localhost" --shop-path="" --db-host="localhost" --db-user="root" --db-password="admin" --db-name="shopware5" --admin-username="{{ shopware_config.admin_name }}" --admin-password="support" --admin-name="Styla Admin" --admin-email="support@styla.com" chdir="/var/www/shopware"
+RUN sw install:release --release="5.4.0" --install-dir="." --shop-host="localhost" --shop-path="/" --db-host="localhost" --db-user="root" --db-password="admin" --db-name="shopware5" --admin-username="{{ shopware_config.admin_name }}" --admin-password="support" --admin-name="Styla Admin" --admin-email="support@styla.com"
