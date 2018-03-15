@@ -55,10 +55,10 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     public function install(){
         $this->registerEvents();
         $this->createConfigForm();
-        $this->registerController('Frontend', 'stylaApi');
-        $this->registerController('Frontend', 'magazin');
-        $this->registerController('Frontend', 'stylapluginversion');
-        $this->registerController('Frontend', 'stylaseoupdate');
+        $this->registerController('Frontend', 'Stylaapi');
+        $this->registerController('Frontend', 'Magazin');
+        $this->registerController('Frontend', 'Stylapluginversion');
+        $this->registerController('Frontend', 'Stylaseoupdate');
         $this->createDbTables();
         return true;
     }

@@ -1,6 +1,6 @@
 <?php
 
-class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Frontend_Checkout
+class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Frontend_Checkout
 {
 
     public function indexAction()
@@ -188,7 +188,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
                 case 'v3': //v1 and v2 combined
                     $defImages = array_values(array_unique(array_merge($imagesArr, $imagesNewArr)));
                 break;
-                
+
             }
 
             $res[] = array(
