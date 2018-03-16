@@ -30,6 +30,11 @@ ln -s /home/root/StylaSEO /var/www/shopware/engine/Shopware/Plugins/Local/Fronte
 /var/www/shopware/bin/console sw:plugin:config:set StylaSEO styla_modular_content_username "ci-shopware5-pd"
 /var/www/shopware/bin/console sw:plugin:config:set StylaSEO styla_modular_content_api "http://frontend-gateway.stage.eu.magalog.net"
 
+# Add Styla snippet into product page template
+sed -i ':a;N;$!ba;s/\n/{stylalb}/gm' /var/www/shopware/themes/Frontend/Bare/frontend/detail/content.tpl
+sed -i 's/[^}]\(<\/div>\s*{stylalb}\s*{\/block}\)$/{$styla_seo_content}\1/gm' /var/www/shopware/themes/Frontend/Bare/frontend/detail/content.tpl
+sed -i 's/{stylalb}/\n/gm' /var/www/shopware/themes/Frontend/Bare/frontend/detail/content.tpl
+
 # Finalize
 /var/www/shopware/bin/console sw:cache:clear
 
