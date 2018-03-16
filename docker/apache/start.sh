@@ -10,7 +10,7 @@ sw install:release --release="5.4.0" --install-dir="/var/www/shopware" --shop-ho
 chown -R www-data:www-data /var/www/shopware
 
 # Copy plugin
-ln -s /home/root/StylaSEO /var/www/shopware/engine/Shopware/Plugins/Local/Frontend/StylaSEO
+ln -s /home/root/StylaSEO /var/www/shopware/engine/Shopware/Plugins/Default/Frontend/StylaSEO
 
 # Configurare Shopware
 /var/www/shopware/bin/console sw:firstrunwizard:disable
