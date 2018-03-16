@@ -15,7 +15,10 @@ ln -s /home/root/StylaSEO /var/www/shopware/engine/Shopware/Plugins/Local/Fronte
 # Configurare Shopware
 /var/www/shopware/bin/console sw:firstrunwizard:disable
 /var/www/shopware/bin/console sw:plugin:refresh
-/var/www/shopware/bin/console sw:plugin:install SwagDemoDataEN # TODO: Plugin by name "SwagDemoDataEN" was not found ?!?
+
+/var/www/shopware/bin/console sw:store:download SwagDemoDataEN
+/var/www/shopware/bin/console sw:plugin:install SwagDemoDataEN
+/var/www/shopware/bin/console sw:plugin:activate SwagDemoDataEN
 
 # Configurate plugin
 /var/www/shopware/bin/console sw:plugin:install StylaSEO
