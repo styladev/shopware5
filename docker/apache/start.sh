@@ -36,6 +36,7 @@ sed -i 's/[^}]\(<\/div>\s*{stylalb}\s*{\/block}\)$/{$styla_seo_content}\1/gm' /v
 sed -i 's/{stylalb}/\n/gm' /var/www/shopware/themes/Frontend/Bare/frontend/detail/content.tpl
 
 # Finalize
+cp -f /home/root/config.php /var/www/shopware/config.php
 /var/www/shopware/bin/console sw:cache:clear
 
 # Starting apache
