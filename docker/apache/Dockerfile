@@ -57,6 +57,7 @@ RUN ln -s /home/root/sw-cli-tools/bin/sw /usr/bin/sw
 
 # Configurate apache
 ADD /docker/apache/vhosts.conf /etc/apache2/sites-enabled/000-default.conf
+RUN a2enmod rewrite
 
 # Install Shopware
 ADD /docker/apache/start.sh /home/root/start.sh
