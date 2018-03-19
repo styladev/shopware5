@@ -18,4 +18,4 @@ The shopsystem is already setup for modular content but the cronjob is not runni
     
 After this the story data on product details should show up here:
 
-    http://localhost/food/fish/12/main-product-with-cross-selling
+    http://localhost/free-time-electronic/1/main-product
