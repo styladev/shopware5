@@ -228,6 +228,15 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
         return $currency;
     }
 
+    public function throwErr($error)
+    {
+        $message['error'] = $error;
+        $message['saleable'] = false;
+
+        echo json_encode($message);
+        exit;
+    }
+
     public function productAction()
     {
         $resource = \Shopware\Components\Api\Manager::getResource('article');
@@ -236,15 +245,23 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
         $useNumberAsId = (boolean)$this->Request()->getParam('useNumberAsId', 0);
 
         if ($useNumberAsId) {
-            $article = $resource->getOneByNumber($id, array(
-                'language' => $this->Request()->getParam('language'),
-                'considerTaxInput' => $this->Request()->getParam('considerTaxInput'),
-            ));
+            try {
+                $article = $resource->getOneByNumber($id, array(
+                    'language' => $this->Request()->getParam('language'),
+                    'considerTaxInput' => $this->Request()->getParam('considerTaxInput'),
+                ));
+            } catch (Exception $e) {
+                $this->throwErr($e->getMessage());
+            }
         } else {
-            $article = $resource->getOne($id, array(
-                'language' => $this->Request()->getParam('language'),
-                'considerTaxInput' => $this->Request()->getParam('considerTaxInput')
-            ));
+            try {
+                $article = $resource->getOne($id, array(
+                    'language' => $this->Request()->getParam('language'),
+                    'considerTaxInput' => $this->Request()->getParam('considerTaxInput')
+                ));
+            } catch (Exception $e) {
+                $this->throwErr($e->getMessage());
+            }
         }
 
         $taxInclPrice = $article['mainDetail']['prices'][0]['price'] + ($article['mainDetail']['prices'][0]['price'] * ($article['tax']['tax'] / 100));
