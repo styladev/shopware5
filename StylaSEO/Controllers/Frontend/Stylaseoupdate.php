@@ -4,7 +4,7 @@ class Shopware_Controllers_Frontend_Stylaseoupdate extends Enlight_Controller_Ac
     // TODO consider 30 seconds max execution time
     // TODO: set document type of response to JSON
     public function indexAction(){
-        $Bootstrap = new Shopware_Plugins_Frontend_StylaSEO_Bootstrap;
+        $Bootstrap = new Shopware_Plugins_Frontend_StylaSEO_Bootstrap('StylaSEO');
         $config = Enlight_Application::Instance()->Bootstrap()->Config();
         $username = $config->get('styla_modular_content_username');
         $seo_url = $config->get('styla_seo_url');

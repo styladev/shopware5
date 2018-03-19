@@ -63,7 +63,7 @@ class StylaUtils{
                 $arr = $cache->load($cache_key);
             }
         } else {
-            $arr = self::_loadRemoteContent($url);
+            $arr = self::_loadRemoteContent($url, '');
         }
 
         return $arr;
