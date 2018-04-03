@@ -16,6 +16,44 @@ class StylaUtils{
 	    return '<script type="text/javascript" src="'.$url.'" async></script>';
     }
 
+    public static function createTag($tagObj) {
+        if ($tagObj->tag == "title" || $tagObj->tag == "script") {
+            $selfClosing = false;
+        }
+        else {
+            $selfClosing = true;
+        }
+
+        $tag = '<';
+        $tag .= $tagObj->tag;
+
+        if ($tagObj->attributes && !empty((array) $tagObj->attributes)) {
+            foreach ($tagObj->attributes as $key => $value) {
+                $tag .= ' ' . $key . '="' . $value . '"';
+            }
+        }
+
+        if ($selfClosing){
+            if ($tagObj->tag == "meta" || $tagObj->tag == "link") {
+                $tag .= '>';
+            }
+            else{
+                $tag .= ' />';
+            }
+        }
+        else {
+            $tag .= '>';
+            if ($tagObj->content) {
+                $tag .= $tagObj->content;
+            }
+            $tag .= '</';
+            $tag .= $tagObj->tag;
+            $tag .= '>';
+        }
+
+        return $tag;
+    }
+
     public static function getActionFromUrl($basedir = 'magazin'){
         $url = $_SERVER['REQUEST_URI'];
         $action = preg_filter('(/en)?/'.$basedir.'/([^\/]+).*/i', '$2', $url);
@@ -84,31 +122,21 @@ class StylaUtils{
                 return false;
 
             $ret = array();
-            $ret['meta'] = array();
             $json = json_decode(self::$_res);
 
             if(isset($json->status)) {
                 $ret['status_code'] = $json->status;
                 if ($json->status == 200) {
-                    // head content
-                    if(isset($json->html->head)){
-                        $ret['head_content'] = $json->html->head;
-                        // erase title and description from html head because duplicated
-                        $titleRegex = '/<title>(.|\r\n)*?<\/title>/i';
-                        $descriptionContent = array();
-                        $descriptionRegex = '/<meta name="description" content="([^\"]*)">/i';
-                        $description = preg_match($descriptionRegex, $ret['head_content'], $descriptionContent);
-                        $descriptionContent = $descriptionContent[1];
-                        $ret['head_content'] = preg_replace($titleRegex, "", $ret['head_content']);
-                        $ret['head_content'] = preg_replace($descriptionRegex, "", $ret['head_content']);
+                    $ret['noscript_content'] = $json->html->body;
+                    $ret['metaTags'] = '';
+                    foreach($json->tags as $singleTag){
+                        if ($singleTag->tag == "title") {
+                            $ret['title'] = $singleTag->content;
+                        }
+                        else {
+                            $ret['metaTags'] .= self::createTag($singleTag) . PHP_EOL;
+                        }
                     }
-                    // Noscript content
-                    if(isset($json->html->body)){
-                        $ret['noscript_content'] = $json->html->body;
-                    }
-                    $ret['page_title'] = $json->tags[0]->content;
-                    $ret['meta_description'] = $descriptionContent;
-                    $ret['query_params'] = $query_params;
                 }
             }
             return $ret;
