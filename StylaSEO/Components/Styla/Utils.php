@@ -27,14 +27,19 @@ class StylaUtils{
         $tag = '<';
         $tag .= $tagObj->tag;
 
-        if ($tagObj->attributes && !empty((array) $tagObj->attributes)){
+        if ($tagObj->attributes && !empty((array) $tagObj->attributes)) {
             foreach ($tagObj->attributes as $key => $value) {
                 $tag .= ' ' . $key . '="' . $value . '"';
             }
         }
 
         if ($selfClosing){
-            $tag .= ' />';
+            if ($tagObj->tag == "meta" || $tagObj->tag == "link") {
+                $tag .= '>';
+            }
+            else{
+                $tag .= ' />';
+            }
         }
         else {
             $tag .= '>';
