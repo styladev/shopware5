@@ -1,6 +1,6 @@
 <?php
 
-class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Frontend_Checkout
+class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Frontend_Checkout
 {
 
     public function indexAction()
@@ -188,7 +188,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
                 case 'v3': //v1 and v2 combined
                     $defImages = array_values(array_unique(array_merge($imagesArr, $imagesNewArr)));
                 break;
-                
+
             }
 
             $res[] = array(
@@ -228,6 +228,15 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
         return $currency;
     }
 
+    public function throwErr($error)
+    {
+        $message['error'] = $error;
+        $message['saleable'] = false;
+
+        echo json_encode($message);
+        exit;
+    }
+
     public function productAction()
     {
         $resource = \Shopware\Components\Api\Manager::getResource('article');
@@ -236,15 +245,23 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
         $useNumberAsId = (boolean)$this->Request()->getParam('useNumberAsId', 0);
 
         if ($useNumberAsId) {
-            $article = $resource->getOneByNumber($id, array(
-                'language' => $this->Request()->getParam('language'),
-                'considerTaxInput' => $this->Request()->getParam('considerTaxInput'),
-            ));
+            try {
+                $article = $resource->getOneByNumber($id, array(
+                    'language' => $this->Request()->getParam('language'),
+                    'considerTaxInput' => $this->Request()->getParam('considerTaxInput'),
+                ));
+            } catch (Exception $e) {
+                $this->throwErr($e->getMessage());
+            }
         } else {
-            $article = $resource->getOne($id, array(
-                'language' => $this->Request()->getParam('language'),
-                'considerTaxInput' => $this->Request()->getParam('considerTaxInput')
-            ));
+            try {
+                $article = $resource->getOne($id, array(
+                    'language' => $this->Request()->getParam('language'),
+                    'considerTaxInput' => $this->Request()->getParam('considerTaxInput')
+                ));
+            } catch (Exception $e) {
+                $this->throwErr($e->getMessage());
+            }
         }
 
         $taxInclPrice = $article['mainDetail']['prices'][0]['price'] + ($article['mainDetail']['prices'][0]['price'] * ($article['tax']['tax'] / 100));
@@ -288,9 +305,10 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
             );
 
             foreach ($article['mainDetail']['configuratorOptions'] as $m_option) {
+
                 if ($variant['id'] == $m_option['groupId']) {
                     //$rr = (array)$res['attributes'][ $variant['id'] ]['options'][ $m_option['id'] ]['products'];
-                    $saleable = ($article['mainDetail']['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
+                    $saleable = $article['mainDetail']['active'] && ($article['mainDetail']['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
                     $res['attributes'][$variant['id']]['options'][$m_option['id']] = array(
                         'id' => $m_option['id'],
                         'label' => htmlentities($m_option['name']),
@@ -306,7 +324,7 @@ class Shopware_Controllers_Frontend_StylaApi extends Shopware_Controllers_Fronte
                 foreach ($configuration['configuratorOptions'] as $m_option) {
                     if ($variant['id'] == $m_option['groupId']) {
                         $rrr = (array)$res['attributes'][$variant['id']]['options'][$m_option['id']]['products'];
-                        $saleable = ($configuration['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
+                        $saleable = $configuration['active'] && ($configuration['inStock'] > 0 || !$article['lastStock']) ? 'true' : 'false';
                         $res['attributes'][$variant['id']]['options'][$m_option['id']] = array(
                             'id' => $m_option['id'],
                             'label' => htmlentities($m_option['name']),
