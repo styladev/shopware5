@@ -1,5 +1,12 @@
+### v5.4.0 2018-04-04
+* Added support for modular content in product detail page
+* Improved PHP 7 compatibility
+* Improved rendering of SEO tags in head
+* Detailed error message when product is not available
+* Fallback logic if request to SEO API fails
+
 ### v5.3.1 2018-03-08
-* Removed duplicate canonical tag 
+* Removed duplicate canonical tag
 
 ### v5.3.0 2018-01-18
 * Added new parameter 'images' in feed endpoint to select method for retrieving images (v1, v2 or v3)
