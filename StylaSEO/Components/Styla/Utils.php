@@ -142,7 +142,8 @@ class StylaUtils{
             return $ret;
 
         }catch (Exception $e){
-            echo 'ERROR: '.$e->getMessage().' url:'.$url;
+            $ret['status_code'] = 500;
+            return $ret;
         }
 
     }
