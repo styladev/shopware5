@@ -49,3 +49,16 @@ The easiest way to add opengraph tags is to add the block in the base header.tpl
     ```
 
     ![Add opengraph tags block](/readme/readme_meta_tags_opengraph.png)
+
+
+## Setup Process
+
+The process of setting up your Content Hub(s) usually goes as follows:
+
+1. Install and configure the plugin on your stage using Content Hub ID(s) shared by Styla
+2. Share the stage URL, credentials with Styla
+4. Styla integrates product data from endpoints provided by the plugin, test your stage Content Hub and asks additional questions, if needed
+5. Install and configure the plugin on production, without linking to the Content Hub(s) there and, again, share the URL with Styla
+6. Make sure your content is ready to go live
+7. Styla conducts final User Acceptance Tests before the go-live
+8. Go-live (you link to the Content Hub embedded on your production)
