@@ -43,7 +43,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
                 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
                 `path` varchar(255) DEFAULT NULL,
                 `locale` varchar(10) DEFAULT NULL,
-                `content` text,
+                `content` longtext,
                 `time_updated` datetime DEFAULT NULL,
                 `time_created` datetime DEFAULT NULL,
                 PRIMARY KEY (`id`),
