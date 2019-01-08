@@ -143,7 +143,12 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
         $articles = Shopware()->Modules()->Articles();
 
         $res = array();
+
         foreach ($result['data'] as $key => $value) {
+            if (!$value['active']) {
+                continue;
+            }
+
             $mainImg = $articles->getArticleListingCover($value['id']);
             $additionalImages = $articles->sGetArticlePictures($value['id'], false, 0, null, true);
             $articleDetails = $articles->sGetArticleById($value['id']);
