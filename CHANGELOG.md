@@ -1,3 +1,6 @@
+### v5.4.1 2019-01-08
+* Ignore inactive products
+
 ### v5.4.0 2018-04-04
 * Added support for modular content in product detail page
 * Improved PHP 7 compatibility
