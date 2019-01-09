@@ -149,60 +149,64 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
                 continue;
             }
 
-            $mainImg = $articles->getArticleListingCover($value['id']);
-            $additionalImages = $articles->sGetArticlePictures($value['id'], false, 0, null, true);
-            $articleDetails = $articles->sGetArticleById($value['id']);
-            $imagesArr = array();
-            $imagesArr[0] = $mainImg['src']['original'];
+            try {
+                $mainImg = $articles->getArticleListingCover($value['id']);
+                $additionalImages = $articles->sGetArticlePictures($value['id'], false, 0, null, true);
+                $articleDetails = $articles->sGetArticleById($value['id']);
+                $imagesArr = array();
+                $imagesArr[0] = $mainImg['src']['original'];
 
-            if (is_array($additionalImages)){
-                foreach ($additionalImages as $image) {
-                    $imagesArr[] = $image['src']['original'];
+                if (is_array($additionalImages)){
+                    foreach ($additionalImages as $image) {
+                        $imagesArr[] = $image['src']['original'];
+                    }
                 }
-            }
 
-            // Alternative method to get images - may solve issues for clients with custom implementation for Media
-            $imagesNewArr = array();
+                // Alternative method to get images - may solve issues for clients with custom implementation for Media
+                $imagesNewArr = array();
 
-            $imagesNewArr[] = $articleDetails['image']['source'];
+                $imagesNewArr[] = $articleDetails['image']['source'];
 
-            if ($articleDetails['sConfigurator']){
-                foreach ($articleDetails['sConfigurator'] as $variant) {
-                    if ($variant['values']) {
-                        foreach ($variant['values'] as $singleValue) {
-                            if ($singleValue['media']['source']) {
-                                if (!in_array($singleValue['media']['source'], $imagesNewArr)){
-                                    $imagesNewArr[] = $singleValue['media']['source'];
+                if ($articleDetails['sConfigurator']){
+                    foreach ($articleDetails['sConfigurator'] as $variant) {
+                        if ($variant['values']) {
+                            foreach ($variant['values'] as $singleValue) {
+                                if ($singleValue['media']['source']) {
+                                    if (!in_array($singleValue['media']['source'], $imagesNewArr)){
+                                        $imagesNewArr[] = $singleValue['media']['source'];
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
+                switch ($imagesMethod) {
+                    case 'v1': //old method for images (default)
+                    default:
+                        $defImages = $imagesArr;
+                        break;
+
+                    case 'v2': //new method for images
+                        $defImages = $imagesNewArr;
+                        break;
+
+                    case 'v3': //v1 and v2 combined
+                        $defImages = array_values(array_unique(array_merge($imagesArr, $imagesNewArr)));
+                        break;
+
+                }
+
+                $res[] = array(
+                    'shopId' => $value['id'],
+                    'sku' => $articleDetails['ordernumber'],
+                    'caption' => htmlentities($value['name']),
+                    'images' => $defImages,
+                    'pageUrl' => $this->double_slashes_clean($this->getLinksOfProduct($value['id'], htmlentities($value['name']))),
+                    'shop' => ($value['active'] ? 'true' : 'false'));
+            } catch (Exception $e) {
+                error_log("Failed to retrieve article information for id " . $value['id'] . " : " . $e->getMessage());
             }
-
-            switch ($imagesMethod) {
-                case 'v1': //old method for images (default)
-                default:
-                    $defImages = $imagesArr;
-                break;
-
-                case 'v2': //new method for images
-                    $defImages = $imagesNewArr;
-                break;
-
-                case 'v3': //v1 and v2 combined
-                    $defImages = array_values(array_unique(array_merge($imagesArr, $imagesNewArr)));
-                break;
-
-            }
-
-            $res[] = array(
-                'shopId' => $value['id'],
-                'sku' => $articleDetails['ordernumber'],
-                'caption' => htmlentities($value['name']),
-                'images' => $defImages,
-                'pageUrl' => $this->double_slashes_clean($this->getLinksOfProduct($value['id'], htmlentities($value['name']))),
-                'shop' => ($value['active'] ? 'true' : 'false'));
         }
         //echo '<pre>'; print_r($res); exit;
         $res = json_encode($res, JSON_PRETTY_PRINT);

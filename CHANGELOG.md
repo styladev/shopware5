@@ -1,3 +1,6 @@
+### v5.4.2 2019-01-09
+* Improved resilience of product search
+
 ### v5.4.1 2019-01-08
 * Ignore inactive products
 
