@@ -1,3 +1,6 @@
+### v5.4.3 2019-01-25
+* Fixed placement of seo html
+
 ### v5.4.2 2019-01-09
 * Improved resilience of product search
 
