@@ -1,7 +1,7 @@
 <?php
 class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_Plugin_Bootstrap {
 
-    protected $_styla_username, $_magazin_basedir;
+    protected $_styla_username, $_magazin_basedir, $_styla_magazine_on_frontpage;
 
     public function getCapabilities(){
         return array(
@@ -89,6 +89,12 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
             'value' => 'magazine',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
+        $form->setElement('boolean', 'styla_magazine_on_frontpage', array(
+            'label' => 'Show Magazine on Frontpage',
+            'required' => true,
+            'value' => false,
+            'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
+        ));
         $form->setElement('text', 'styla_modular_content_username', array(
             'label' => 'Styla Modular Content ID',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
@@ -118,8 +124,11 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
 
         $this->_styla_username = $this->Config()->get('styla_username');
         $this->_magazin_basedir = $this->Config()->get('styla_basedir', 'magazine');
+        $this->_styla_magazine_on_frontpage = $this->Config()->get('styla_magazine_on_frontpage', false);
 
-        if (strpos($request->getRequestUri(), $this->_magazin_basedir) !== false){
+        if ($request->getRequestUri() == "/" && $this->_styla_magazine_on_frontpage){
+            $controller	= 'magazin';
+        } else if (strpos($request->getRequestUri(), $this->_magazin_basedir) !== false){
 		    $controller	= 'magazin';
         } else if(strpos($request->getRequestUri(), '/styla-plugin-version') !== false) {
 		    $controller	= 'stylapluginversion';
