@@ -12,7 +12,7 @@ class StylaUtils{
             $js_url = self::STYLA_URL;
 
 
-	    $url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/preloader/'.$username.'.js';
+	    $url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/clients/'.$username.'.js';
 	    return '<script type="text/javascript" src="'.$url.'" async></script>';
     }
 
