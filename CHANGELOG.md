@@ -1,3 +1,7 @@
+### v5.4.4 2019-04-25
+* Use proper 'EK' prices instead of first price
+* Improved product transformation
+
 ### v5.4.3 2019-01-25
 * Fixed placement of seo html
 
