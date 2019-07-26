@@ -17,7 +17,7 @@ class StylaUtils{
     }
 
     public static function createTag($tagObj) {
-        if ($tagObj->tag == "title" || $tagObj->tag == "script") {
+        if ($tagObj->tag == "title" || $tagObj->tag == "script" || $tagObj->tag == "style") {
             $selfClosing = false;
         }
         else {
