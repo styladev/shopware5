@@ -1,4 +1,4 @@
-FROM php:7.1-apache
+FROM php:7.1-apache-jessie
 
 RUN apt-get update -qq && apt-get install -y -qq \
         libicu-dev \

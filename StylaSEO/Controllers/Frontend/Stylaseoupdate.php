@@ -38,7 +38,7 @@ class Shopware_Controllers_Frontend_Stylaseoupdate extends Enlight_Controller_Ac
                     break;
                 }
                 $path = 'story/' . ltrim($singleStory->slug, '/');
-                $seoContent = StylaUtils::getRemoteContent($username, $path, '', rtrim($seo_url, '/') . '/', false);
+                $seoContent = StylaUtils::getRemoteContent($username, $path, rtrim($seo_url, '/') . '/', false);
                 $this->updateStory($locale, $path, $this->escapeHtml($seoContent['noscript_content']), $singleStory->timeLastUpdatedEpoch);
                 $processedCount++;
                 $countStories++;
