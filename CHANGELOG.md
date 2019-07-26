@@ -1,3 +1,6 @@
+### v5.4.5 2019-07-26
+* Pass full pathname as path to seo api
+
 ### v5.4.4 2019-04-25
 * Use proper 'EK' prices instead of first price
 * Improved product transformation

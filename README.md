@@ -1,4 +1,4 @@
-# Styla SEO Enhancements Shopware Module (v5.4.4)
+# Styla SEO Enhancements Shopware Module (v5.4.5)
 #### Author: Mark Mulder (BSolut GmbH)
 #### Contributor: Sebastian Sachtleben, Christian Korndoerfer, Roberto Solís, Antonio Cosentino
 
