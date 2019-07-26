@@ -6,7 +6,6 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
     protected $_source_url        = null;
     protected $_snippet_url       = null;
     protected $_feed_params       = array();
-    protected $_url_query_params  = null;
     protected $_base_dir          = null;
 
 
@@ -24,7 +23,6 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         $this->_base_dir    = $config->get('styla_basedir');
         $this->_source_url = rtrim($this->_source_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
         $this->_snippet_url = rtrim($this->_snippet_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
-        $this->_url_query_params = StylaUtils::getQueryFromUrl();
 
         if(!$this->_username) {
             die('No username set for Styla SEO plugin'); // TODO maybe something better than die, but then again since it's a required field this should never really be empty
@@ -32,14 +30,13 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
     }
 
     public function postDispatch(){
-
         $type = $this->_feed_params['type'];
         $js_include = StylaUtils::getJsEmbedCode($this->_username, $this->_snippet_url);
 
-        $ret = null;
+        $uri = parse_url($_SERVER['REQUEST_URI']);
+        $path = $uri['path'];
 
-        $path = StylaUtils::getCurrentPath($this->_base_dir);
-        $ret = StylaUtils::getRemoteContent($this->_username, $path, $this->_url_query_params, $this->_source_url);
+        $ret = StylaUtils::getRemoteContent($this->_username, $path, $this->_source_url);
 
         $custom_page = $this->View()->getAssign('sCustomPage');
         if($ret){

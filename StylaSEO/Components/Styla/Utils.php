@@ -60,23 +60,13 @@ class StylaUtils{
 	    return $action;
     }
 
-    public static function getCurrentPath($basedir = 'magazin'){
-        $arr = parse_url($_SERVER['REQUEST_URI']);
-        $url = $arr['path'];
-        if(($start = strpos($url,$basedir))===false)
-            return false;
-
-        $ret = substr($url, $start+strlen($basedir)+1);
-        return rtrim($ret, '/');
-    }
-
     public static function getQueryFromUrl(){
         $url = parse_url($_SERVER['REQUEST_URI']);
         $query = $url['query'];
         return $query;
     }
 
-    public static function getRemoteContent($username, $path, $query_params, $src_url = null, $caching_enabled=true){
+    public static function getRemoteContent($username, $path, $src_url = null, $caching_enabled=true){
         $cache = Shopware()->Cache();
         $config = Shopware()->Config();
 
@@ -84,15 +74,14 @@ class StylaUtils{
             $src_url =  self::STYLA_URL;
 
         self::$_username = $username;
-        if($query_params)
-            $query_params = '?'.$query_params;
-        $url = $src_url.'clients/'.$username.'?url='.$path.$query_params;
+
+        $url = $src_url.'clients/'.$username.'?url='.$path;
 
         $cache_key = self::getCacheKey($url);
 
         if ($caching_enabled && !empty($config->caching)) {
             if (!$cache->test($cache_key)) {
-                $arr = self::_loadRemoteContent($url, $query_params);
+                $arr = self::_loadRemoteContent($url);
                 if(!$arr)
                     return;
 
@@ -101,14 +90,14 @@ class StylaUtils{
                 $arr = $cache->load($cache_key);
             }
         } else {
-            $arr = self::_loadRemoteContent($url, '');
+            $arr = self::_loadRemoteContent($url);
         }
 
         return $arr;
 
     }
 
-    private static function _loadRemoteContent($url, $query_params){
+    private static function _loadRemoteContent($url){
         $curl = new StylaCurl();
 
         $curl_opts = array(
