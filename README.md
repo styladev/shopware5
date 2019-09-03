@@ -4,7 +4,7 @@
 
 Styla Magazine Plugin is a module to connect your Shopware 5 Store with [Styla](http://www.styla.com/). For our Shopware 4 plugin check this https://github.com/styladev/shopware4
 
-The first diagram on [this page](https://styladocs.atlassian.net/wiki/spaces/CO/pages/9961481/Technical+Integration) should provide you an overview of what the plugin does and how it exchanges data with Styla.
+[This documentation page](https://docs.styla.com/) should provide you an overview of how Styla works in general. 
 
 
 ## Installation How-to
