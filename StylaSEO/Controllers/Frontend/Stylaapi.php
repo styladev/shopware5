@@ -244,7 +244,7 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
         exit;
     }
 
-    public function getEKPrices($detail) {
+    public function getEKPrices($detail, $currencyInfo) {
         $productEKPrice = null;
         $productEKPseudoPrice = null;
 
@@ -264,10 +264,14 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
             $productEKPseudoPrice = $price['pseudoPrice'];
         }
 
-        return [
-            "price" => $productEKPrice,
-            "pseudoPrice" => $productEKPseudoPrice,
-        ];
+        // factor might be 0 or 1 which means its the base price
+        $factor = $currencyInfo['factor'];
+        $factor = $factor == 0 ? 1 : $factor;
+
+        return array_merge(
+            [ "price" => $productEKPrice * $factor ],
+            $productEKPseudoPrice ? [ "pseudoPrice" => $productEKPseudoPrice * $factor ] : []
+        );
     }
 
     public function productAction()
@@ -301,7 +305,7 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
             }
         }
 
-        $ekPrices = $this->getEKPrices($article['mainDetail']);
+        $ekPrices = $this->getEKPrices($article['mainDetail'], $currencyInfo);
         $productEKPrice = $ekPrices['price'];
         $productEKPseudoPrice = $ekPrices['pseudoPrice'];
 
@@ -340,24 +344,26 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
         $minPurchase = $article['mainDetail']['minPurchase'];
         $maxPurchase = $article['mainDetail']['maxPurchase'];
 
-        $res = [
-            'id' => $article['mainDetail']['number'],
-            'name' => htmlentities($article['name']),
-            'description' => $article['description'],
-            'categories' => array_column($article['categories'], 'id'),
-            'saleable' => ($isActive && ($hasStock || !$isLastStock)) ? 'true' : 'false',
-            'price' => $priceFormatted,
-            'priceTemplate' => $priceTemplate,
-            'oldPrice' => $oldPriceFormatted,
-            'minqty' => $minPurchase,
-            'maxqty' => ($maxPurchase > 0) ? $maxPurchase : 100,
-            'tax' => [
-                'rate' => $article['tax']['tax'],
-                'label' => $article['tax']['name'],
-                'taxIncluded' => 'true',
-                'showLabel' => 'true'
+        $res = array_merge(
+            [
+                'id' => $article['mainDetail']['number'],
+                'name' => htmlentities($article['name']),
+                'description' => $article['description'],
+                'categories' => array_column($article['categories'], 'id'),
+                'saleable' => ($isActive && ($hasStock || !$isLastStock)) ? 'true' : 'false',
+                'price' => $priceFormatted,
+                'priceTemplate' => $priceTemplate,
+                'minqty' => $minPurchase,
+                'maxqty' => ($maxPurchase > 0) ? $maxPurchase : 100,
+                'tax' => [
+                    'rate' => $article['tax']['tax'],
+                    'label' => $article['tax']['name'],
+                    'taxIncluded' => 'true',
+                    'showLabel' => 'true'
+                ],
             ],
-        ];
+            $oldPriceFormatted ? [ 'oldPrice' => $oldPriceFormatted ] : []
+        );
 
         foreach ($article['configuratorSet']['groups'] as $variant) {
             $res['attributes'][$variant['id']] = array(
@@ -380,12 +386,16 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
                 $res['attributes'][$variant['id']]['options'][$m_option['id']] = array(
                     'id' => $m_option['id'],
                     'label' => htmlentities($m_option['name']),
-                    'price' => $priceFormatted,
+
                     'products' => [
-                        0 => [
-                            'id' => $article['mainDetail']['number'],
-                            'saleable' => $saleable
-                        ]
+                        0 => array_merge(
+                            [
+                                'id' => $article['mainDetail']['number'],
+                                'saleable' => $saleable,
+                                'price' => $priceFormatted,
+                            ],
+                            $oldPriceFormatted ? [ 'oldPrice' => $oldPriceFormatted ] : []
+                        )
                     ]
                 );
             }
@@ -410,7 +420,7 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
 
                     $variantOptionProducts = (array) $res['attributes'][$variantId]['options'][$optionId]['products'];
 
-                    $ekPrices = $this->getEKPrices($configuration);
+                    $ekPrices = $this->getEKPrices($configuration, $currencyInfo);
 
                     $formattedOptionPrice = (string)number_format(
                         $ekPrices['price'] * ($taxRate + 1),
@@ -419,18 +429,28 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
                         ''
                     );
 
+                    $formattedOptionPseudoPrice = $ekPrices['pseudoPrice'] ? (string)number_format(
+                        $ekPrices['pseudoPrice'] * ($taxRate + 1),
+                        2,
+                        '.',
+                        ''
+                    ) : null;
+
                     $res['attributes'][$variant['id']]['options'][$m_option['id']] = array(
                         'id' => $m_option['id'],
                         'label' => htmlentities($m_option['name']),
-                        'price' => $formattedOptionPrice,
                         'products' => array_merge(
                             $variantOptionProducts,
                             [
-                                0 => [
-                                    'id' => $configuration['number'],
-                                    'saleable' => $saleable,
-                                    'price' => $formattedOptionPrice
-                                ]
+                                0 => array_merge(
+                                    [
+                                        'id' => $configuration['number'],
+                                        'saleable' => $saleable,
+                                        'price' => $formattedOptionPrice
+                                    ],
+                                    $formattedOptionPseudoPrice ?
+                                        [ 'oldPrice' => $formattedOptionPseudoPrice ] : []
+                                )
                             ]
                         )
                     );
