@@ -1,3 +1,7 @@
+### v5.5.1 2019-10-18
+* Use currency factor for price calculations
+* Added support for variant pseudo prices
+
 ### v5.5.0 2019-07-26
 * Pass full pathname as path to seo api
 
