@@ -25,7 +25,7 @@ ln -s /home/root/StylaSEO /var/www/shopware/engine/Shopware/Plugins/Local/Fronte
 /var/www/shopware/bin/console sw:plugin:activate StylaSEO
 /var/www/shopware/bin/console sw:plugin:config:set StylaSEO styla_username "ci-shopware5"
 /var/www/shopware/bin/console sw:plugin:config:set StylaSEO styla_basedir "magazine"
-/var/www/shopware/bin/console sw:plugin:config:set StylaSEO styla_api_url "https://client-scripts.stage.eu.magalog.net"
+/var/www/shopware/bin/console sw:plugin:config:set StylaSEO styla_js_url "https://engine.styla.com/prophet-stage.js"
 /var/www/shopware/bin/console sw:plugin:config:set StylaSEO styla_seo_url "http://seoapi.stage.eu.magalog.net"
 /var/www/shopware/bin/console sw:plugin:config:set StylaSEO styla_modular_content_username "ci-shopware5-pd"
 /var/www/shopware/bin/console sw:plugin:config:set StylaSEO styla_modular_content_api "http://frontend-gateway.stage.eu.magalog.net"
