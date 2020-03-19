@@ -19,10 +19,11 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         $config = Enlight_Application::Instance()->Bootstrap()->Config();
         $this->_username    = $config->get('styla_username');
         $this->_source_url  = $config->get('styla_seo_url');
-        $this->_snippet_url = $config->get('styla_api_url');
+        $this->_snippet_url = $config->get('styla_js_url');
         $this->_base_dir    = $config->get('styla_basedir');
-        $this->_source_url = rtrim($this->_source_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
-        $this->_snippet_url = rtrim($this->_snippet_url, '/').'/'; // make sure there is always (exactly 1) trailing slash
+
+        // make sure there is always (exactly 1) trailing slash
+        $this->_source_url = rtrim($this->_source_url, '/').'/';
 
         if(!$this->_username) {
             die('No username set for Styla SEO plugin'); // TODO maybe something better than die, but then again since it's a required field this should never really be empty
@@ -31,7 +32,7 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
     public function postDispatch(){
         $type = $this->_feed_params['type'];
-        $js_include = StylaUtils::getJsEmbedCode($this->_username, $this->_snippet_url);
+        $js_include = StylaUtils::getJsEmbedCode($this->_snippet_url);
 
         $uri = parse_url($_SERVER['REQUEST_URI']);
         $path = $uri['path'];
@@ -42,7 +43,7 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         if($ret){
             $custom_page['title'] = $ret['title'];
             $custom_page['metaTags'] = $ret['metaTags'];
-            $stylaDiv = '<div id="stylaMagazine" data-magazinename="'.$this->_username.'">'.$ret['noscript_content'].'</div>';
+            $stylaDiv = '<div data-styla-client="'.$this->_username.'">'.$ret['noscript_content'].'</div>';
             $this->View()->assign('sContent', "\r\n".$js_include."\r\n".$stylaDiv);
             $status_code = $ret['status_code'];
         }

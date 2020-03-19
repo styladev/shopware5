@@ -74,19 +74,19 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $form->setElement('text', 'styla_seo_url', array(
             'label' => 'Styla SEO Server URL',
             'required' => true,
-            'value' => 'http://seoapi.styla.com',
+            'defaultValue' => 'http://seoapi.styla.com',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
-        $form->setElement('text', 'styla_api_url', array(
-            'label' => 'Styla API Server URL',
-            'required' => true,
-            'value' => 'http://client-scripts.styla.com',
+        $form->setElement('text', 'styla_js_url', array(
+            'label' => 'Styla Javascript URL',
+            'required' => false,
+            'defaultValue' => 'https://engine.styla.com/init.js',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_basedir', array(
             'label' => 'Styla Base Folder',
             'required' => true,
-            'value' => 'magazine',
+            'defaultValue' => 'magazine',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_modular_content_username', array(
@@ -96,7 +96,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $form->setElement('text', 'styla_modular_content_api', array(
             'label' => 'Styla Modular Content Api',
             'required' => true,
-            'value' => 'http://live.styla.com',
+            'defaultValue' => 'http://live.styla.com',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
     }

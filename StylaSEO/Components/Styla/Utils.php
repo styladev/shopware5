@@ -7,13 +7,12 @@ class StylaUtils{
     protected static $_username = '';
     protected static $_res = '';
 
-    public static function getJsEmbedCode($username, $js_url = null){
-        if(!$js_url)
-            $js_url = self::STYLA_URL;
+    public static function getJsEmbedCode($js_url = null){
+        if(!$js_url) {
+            return '';
+        }
 
-
-	    $url = preg_filter('/https?:(.+)/i', '$1', (rtrim($js_url, '/').'/')).'scripts/clients/'.$username.'.js';
-	    return '<script type="text/javascript" src="'.$url.'" async></script>';
+	    return '<script type="text/javascript" src="'.$js_url.'" async></script>';
     }
 
     public static function createTag($tagObj) {
