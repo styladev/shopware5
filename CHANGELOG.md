@@ -1,3 +1,10 @@
+### v5.6.0 2020-03-19
+* Support new loading mechanism for styla content
+* Please don't update with the old magazine to this plugin, please contact your styla csm before
+
+### v5.5.2 2019-10-23
+* Remove data-rootpath
+
 ### v5.5.1 2019-10-18
 * Use currency factor for price calculations
 * Added support for variant pseudo prices
