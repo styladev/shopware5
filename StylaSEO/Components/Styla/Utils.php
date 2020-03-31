@@ -106,34 +106,67 @@ class StylaUtils{
         );
 
         try{
-            if(!self::$_res = $curl->call($url, $curl_opts))
+            if(!self::$_res = $curl->call($url, $curl_opts)) {
                 return false;
+            }
 
-            $ret = array();
             $json = json_decode(self::$_res);
 
             if(isset($json->status)) {
-                $ret['status_code'] = $json->status;
-                if ($json->status == 200) {
-                    $ret['noscript_content'] = $json->html->body;
-                    $ret['metaTags'] = '';
-                    foreach($json->tags as $singleTag){
-                        if ($singleTag->tag == "title") {
-                            $ret['title'] = $singleTag->content;
-                        }
-                        else {
-                            $ret['metaTags'] .= self::createTag($singleTag) . PHP_EOL;
-                        }
-                    }
+                if ($json->status != 200) {
+                    return array();
                 }
-            }
-            return $ret;
 
+                return self::parseSeoResponse($json);
+            }
         }catch (Exception $e){
             $ret['status_code'] = 500;
             return $ret;
         }
 
+    }
+
+    public static function parseSeoResponse($response) {
+        $ret = array(
+            'status_code' => $response->status,
+            'noscript_content' => $response->html->body,
+            'robots' => 'index,follow',
+            'openGraph' => '',
+            'hreflang' => '',
+            'otherTags' => '',
+        );
+        foreach($response->tags as $singleTag){
+            if ($singleTag->tag == "title") {
+                $ret['title'] = $singleTag->content;
+            }
+            else if ($singleTag->tag == "meta" && isset($singleTag->attributes->property) &&
+                (self::startsWith($singleTag->attributes->property, "og") ||
+                self::startsWith($singleTag->attributes->property, "twitter"))) {
+                $ret['openGraph'] .= self::createTag($singleTag) . PHP_EOL;
+            }
+            else if ($singleTag->tag == "link" && isset($singleTag->attributes->property) &&
+                $singleTag->attributes->property == "alternate") {
+                $ret['hreflang'] .= self::createTag($singleTag) . PHP_EOL;
+            }
+            else if ($singleTag->tag == "meta" && isset($singleTag->attributes->name) &&
+                $singleTag->attributes->name == "robots") {
+                $ret['robots'] = $singleTag->attributes->content;
+            }
+            else if ($singleTag->tag == "link" && isset($singleTag->attributes->rel) &&
+                $singleTag->attributes->rel == "canonical") {
+                $ret['canonical'] = self::createTag($singleTag);
+            }
+            else if ($singleTag->tag == "meta" && isset($singleTag->attributes->name) &&
+                $singleTag->attributes->name == "description") {
+                $ret['description'] = $singleTag->attributes->content;
+            }
+            else {
+                // These are dns prefetch and custom fonts
+                $ret['otherTags'] .= self::createTag($singleTag) . PHP_EOL;
+            }
+        }
+
+        return $ret;
     }
 
     public static function getCacheKey($text){
@@ -147,5 +180,8 @@ class StylaUtils{
         return $text;
     }
 
+    public static function startsWith($string, $startString) {
+        return substr($string, 0, strlen($startString)) === $startString;
+    }
 
 }
