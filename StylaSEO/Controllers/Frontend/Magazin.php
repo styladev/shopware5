@@ -42,7 +42,13 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         $custom_page = $this->View()->getAssign('sCustomPage');
         if($ret){
             $custom_page['title'] = $ret['title'];
-            $custom_page['metaTags'] = $ret['metaTags'];
+            $custom_page['description'] = $ret['description'];
+            $custom_page['canonical'] = $ret['canonical'];
+            $custom_page['robots'] = $ret['robots'];
+            $custom_page['openGraph'] = $ret['openGraph'];
+            $custom_page['hreflang'] = $ret['hreflang'];
+            $custom_page['otherTags'] = $ret['otherTags'];
+
             $stylaDiv = '<div data-styla-client="'.$this->_username.'">'.$ret['noscript_content'].'</div>';
             $this->View()->assign('sContent', "\r\n".$js_include."\r\n".$stylaDiv);
             $status_code = $ret['status_code'];
