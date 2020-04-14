@@ -1,3 +1,8 @@
+### v5.7.0 2020-03-19
+* Adjusted template block logic:
+  * Moved respective headers in correct blocks: `frontend_index_header_canonical`, `frontend_index_header_meta_description`, `frontend_index_header_meta_tags_opengraph`, `frontend_index_header_meta_robots` and , `frontend_index_header_hreflangs`
+  * Append other headers to block: `frontend_index_header_meta_tags`
+
 ### v5.6.0 2020-03-19
 * Support new loading mechanism for styla content
 * Please don't update with the old magazine to this plugin, please contact your styla csm before
