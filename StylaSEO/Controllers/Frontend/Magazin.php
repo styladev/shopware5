@@ -37,9 +37,9 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         $uri = parse_url($_SERVER['REQUEST_URI']);
         $path = $uri['path'];
 
-        $ret = StylaUtils::getRemoteContent($this->_username, $path, $this->_source_url);
-
         $custom_page = $this->View()->getAssign('sCustomPage');
+        
+        $ret = StylaUtils::getRemoteContent($this->_username, $path, $this->_source_url);
         if($ret){
             $custom_page['title'] = $ret['title'];
             $custom_page['description'] = $ret['description'];
@@ -50,13 +50,18 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
             $custom_page['otherTags'] = $ret['otherTags'];
 
             $stylaDiv = '<div data-styla-client="'.$this->_username.'">'.$ret['noscript_content'].'</div>';
-            $this->View()->assign('sContent', "\r\n".$js_include."\r\n".$stylaDiv);
-            $status_code = $ret['status_code'];
+            $status_code = $ret['status'];
+        } else {
+            $stylaDiv = '<div data-styla-client="'.$this->_username.'"></div>';
         }
 
+        $this->View()->assign('sContent', $stylaDiv . "\r\n" . $js_include);
         $this->View()->assign('sCustomPage', $custom_page);
         $this->View()->assign('feed_type', $type);
-        $this->Response()->setHttpResponseCode($status_code);
+
+        if ($status_code) {
+            $this->Response()->setHttpResponseCode($status_code);
+        }
     }
 
     public function indexAction(){
