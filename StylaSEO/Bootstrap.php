@@ -132,10 +132,6 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
             return;
         }
 
-        if(!$this->_styla_username){
-            die('No Styla Magazine ID set in Plugin settings');
-        }
-
         require_once $this->Path() . 'Components/Styla/Utils.php';
         require_once $this->Path() . 'Components/Styla/Curl.php';
 
