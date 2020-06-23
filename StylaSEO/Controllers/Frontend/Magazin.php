@@ -24,13 +24,13 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
 
         // make sure there is always (exactly 1) trailing slash
         $this->_source_url = rtrim($this->_source_url, '/').'/';
-
-        if(!$this->_username) {
-            die('No username set for Styla SEO plugin'); // TODO maybe something better than die, but then again since it's a required field this should never really be empty
-        }
     }
 
     public function postDispatch(){
+        if(!$this->_username) {
+            return;
+        }
+
         $type = $this->_feed_params['type'];
         $js_include = StylaUtils::getJsEmbedCode($this->_snippet_url);
 
