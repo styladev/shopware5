@@ -1,3 +1,8 @@
+### v5.7.0 2020-06-23
+* improved controller selection
+* improved output of div element and js snippet
+* set status code only on seo api response
+
 ### v5.7.0 2020-03-19
 * Adjusted template block logic:
   * Moved respective headers in correct blocks: `frontend_index_header_canonical`, `frontend_index_header_meta_description`, `frontend_index_header_meta_tags_opengraph`, `frontend_index_header_meta_robots` and , `frontend_index_header_hreflangs`
