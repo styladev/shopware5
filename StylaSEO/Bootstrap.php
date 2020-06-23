@@ -89,6 +89,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
             'defaultValue' => 'magazine',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
+        /** Currently not used by any client ...
         $form->setElement('text', 'styla_modular_content_username', array(
             'label' => 'Styla Modular Content ID',
             'required' => false,
@@ -100,6 +101,7 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
             'defaultValue' => 'http://live.styla.com',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
+         */
     }
 
     protected function registerEvents(){
@@ -120,13 +122,14 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $this->_styla_username = $this->Config()->get('styla_username');
         $this->_magazin_basedir = '/' . ltrim($this->Config()->get('styla_basedir', 'magazine'), '/');
 
-        if (strpos($request->getRequestUri(), '/styla-plugin-version') !== false) {
+        if (strpos($request->getRequestUri(), '/styla-plugin-version') === 0) {
             $controller = 'stylapluginversion';
-        } else if (strpos($request->getRequestUri(), '/stylaapi/update') !== false) {
+        } else if (strpos($request->getRequestUri(), '/stylaapi/update') === 0) {
             $controller = 'stylaseoupdate';
-        } else if (strpos($request->getRequestUri(), '/stylaapi') !== false) {
+        } else if (strpos($request->getRequestUri(), '/stylaapi') === 0) {
             $controller = 'stylaapi';
-        } else if (strpos($request->getRequestUri(), $this->_magazin_basedir) !== false) {
+        } else if ($request->getRequestUri() === $this->_magazin_basedir || 
+                strpos($request->getRequestUri(), $this->_magazin_basedir . '/') === 0) {
             $controller = 'magazin';
         } else {
             return;
