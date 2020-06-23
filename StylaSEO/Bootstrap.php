@@ -91,11 +91,12 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         ));
         $form->setElement('text', 'styla_modular_content_username', array(
             'label' => 'Styla Modular Content ID',
+            'required' => false,
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_modular_content_api', array(
             'label' => 'Styla Modular Content Api',
-            'required' => true,
+            'required' => false,
             'defaultValue' => 'http://live.styla.com',
             'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
