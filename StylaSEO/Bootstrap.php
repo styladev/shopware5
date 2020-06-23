@@ -117,16 +117,16 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         $url = strtok($request->getRequestUri(),'?');
 
         $this->_styla_username = $this->Config()->get('styla_username');
-        $this->_magazin_basedir = $this->Config()->get('styla_basedir', 'magazine');
+        $this->_magazin_basedir = '/' . ltrim($this->Config()->get('styla_basedir', 'magazine'), '/');
 
-        if (strpos($request->getRequestUri(), $this->_magazin_basedir) !== false){
-		    $controller	= 'magazin';
-        } else if(strpos($request->getRequestUri(), '/styla-plugin-version') !== false) {
-		    $controller	= 'stylapluginversion';
-        } else if(strpos($request->getRequestUri(), '/stylaapi/update') !== false){
-            $controller	= 'stylaseoupdate';
-        } else if(strpos($request->getRequestUri(), '/stylaapi') !== false) {
+        if (strpos($request->getRequestUri(), '/styla-plugin-version') !== false) {
+            $controller = 'stylapluginversion';
+        } else if (strpos($request->getRequestUri(), '/stylaapi/update') !== false) {
+            $controller = 'stylaseoupdate';
+        } else if (strpos($request->getRequestUri(), '/stylaapi') !== false) {
             $controller = 'stylaapi';
+        } else if (strpos($request->getRequestUri(), $this->_magazin_basedir) !== false) {
+            $controller = 'magazin';
         } else {
             return;
         }
