@@ -1,7 +1,8 @@
-### v5.7.0 2020-06-23
+### v5.7.0 2020-06-24
 * improved controller selection
 * improved output of div element and js snippet
 * set status code only on seo api response
+* added fallback for robots header to index,follow
 
 ### v5.7.0 2020-03-19
 * Adjusted template block logic:
