@@ -5,12 +5,12 @@
 	{$sCustomPage.title}
 {/strip}{/block}
 
-{* Description *}
+{* Canonical *}
 {block name='frontend_index_header_canonical'}
 	{$sCustomPage.canonical}
 {/block}
 
-{* Canonical *}
+{* Description *}
 {block name='frontend_index_header_meta_description'}{strip}
 	{$sCustomPage.description}
 {/strip}{/block}

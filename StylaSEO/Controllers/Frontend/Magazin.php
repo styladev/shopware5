@@ -40,11 +40,14 @@ class Shopware_Controllers_Frontend_Magazin extends Enlight_Controller_Action {
         $custom_page = $this->View()->getAssign('sCustomPage');
         
         $ret = StylaUtils::getRemoteContent($this->_username, $path, $this->_source_url);
+        $custom_page['robots'] = 'index,follow';
         if($ret){
             $custom_page['title'] = $ret['title'];
             $custom_page['description'] = $ret['description'];
             $custom_page['canonical'] = $ret['canonical'];
-            $custom_page['robots'] = $ret['robots'];
+            if ($ret['robots']) {
+                $custom_page['robots'] = $ret['robots'];
+            }
             $custom_page['openGraph'] = $ret['openGraph'];
             $custom_page['hreflang'] = $ret['hreflang'];
             $custom_page['otherTags'] = $ret['otherTags'];
