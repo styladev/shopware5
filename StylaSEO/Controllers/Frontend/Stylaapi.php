@@ -86,25 +86,26 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
 				LEFT JOIN `s_categories` c ON acr.articleID = c.id
 				LEFT JOIN `s_articles_supplier` asp ON a.supplierID = asp.id
         LEFT JOIN `s_articles_details` sad ON sad.articleID = a.id
-				WHERE acr.categoryID = $categoryId
-					AND (a.name LIKE '%" . $term . "%'
-          OR a.id LIKE '%" . $term . "%'
-					OR a.description LIKE '%" . $term . "%'
-					OR asp.name LIKE '%" . $term . "%'
-					OR c.description LIKE '%" . $term . "%'
-          OR sad.ordernumber LIKE '%" . $term . "%')
+				WHERE acr.categoryID = ?
+					AND (a.name LIKE ?
+          OR a.id LIKE ?
+					OR a.description LIKE ?
+					OR asp.name LIKE ?
+					OR c.description LIKE ?
+          OR sad.ordernumber LIKE ?)
 				GROUP BY a.id";
 
-            $filterArticles = Shopware()->Db()->fetchAll($sql);
+            $term = "%".$term."%";
+            $filterArticles = Shopware()->Db()->fetchAll($sql,[$categoryId,$term,$term,$term,$term,$term,$term]);
             $filter['id'] = array_column($filterArticles, 'id');
 
         } else if ($categoryId > 0) {
             $sql = "SELECT a.id, a.name
 				FROM `s_articles_categories_ro` acr
 				LEFT JOIN `s_articles` a ON acr.articleID = a.id
-				WHERE acr.categoryID = $categoryId ";
+				WHERE acr.categoryID = ? ";
 
-            $categoryArticles = Shopware()->Db()->fetchAll($sql);
+            $categoryArticles = Shopware()->Db()->fetchAll($sql,[$categoryId]);
             $articleIds = array_column($categoryArticles, 'id');
 
             $filter['id'] = $articleIds;
@@ -117,15 +118,15 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
 				LEFT JOIN `s_articles_categories_ro` acr ON acr.articleID = a.id
 				LEFT JOIN `s_categories` c ON acr.articleID = c.id
         LEFT JOIN `s_articles_details` sad ON sad.articleID = a.id
-				WHERE a.name LIKE '%" . $term . "%'
-          OR a.id LIKE '%" . $term . "%'
-					OR a.description LIKE '%" . $term . "%'
-					OR asp.name LIKE '%" . $term . "%'
-					OR c.description LIKE '%" . $term . "%'
-          OR sad.ordernumber LIKE '%" . $term . "%'
+				WHERE a.name LIKE ?
+          OR a.id LIKE ?
+					OR a.description LIKE ?
+					OR asp.name LIKE ?
+					OR c.description LIKE ?
+          OR sad.ordernumber LIKE ?
 				GROUP BY a.id";
-
-            $searchArticles = Shopware()->Db()->fetchAll($sql);
+            $term = "%".$term."%";
+            $searchArticles = Shopware()->Db()->fetchAll($sql,[$term,$term,$term,$term,$term,$term]);
             $filter['id'] = array_column($searchArticles, 'id');
         }
 

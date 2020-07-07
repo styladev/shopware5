@@ -91,8 +91,8 @@ class Shopware_Controllers_Frontend_Stylaseoupdate extends Enlight_Controller_Ac
     }
 
     public function selectStories($locale, $path) {
-        $seoQuery = "SELECT * FROM s_styla_seo_content WHERE locale = '" . $locale . "' AND path = '" . $path . "'";
-        $queryResult = Shopware()->Db()->fetchAll($seoQuery);
+        $seoQuery = "SELECT * FROM s_styla_seo_content WHERE locale = ? AND path = ?";
+        $queryResult = Shopware()->Db()->fetchAll($seoQuery,[$locale,$path]);
         return $queryResult;
     }
 
@@ -108,12 +108,13 @@ class Shopware_Controllers_Frontend_Stylaseoupdate extends Enlight_Controller_Ac
         }
         $result = $this->selectStories($locale, $path);
         if (count($result) > 0){
-            $query = "UPDATE s_styla_seo_content SET `content` = '$content', `time_updated` = '" . $this->timestampToDate($timeLastUpdated)  . "' WHERE `locale` = '$locale' AND `path` = '$path'"; //TODO: use last update from endpoint instead of now
+            $query = "UPDATE s_styla_seo_content SET `content` = ?, `time_updated` = ? WHERE `locale` = ? AND `path` = ?"; //TODO: use last update from endpoint instead of now
+            $queryResult = Shopware()->Db()->query($query,[$content,$this->timestampToDate($timeLastUpdated),$locale,$path]);
         }
         else {
-            $query = "INSERT INTO s_styla_seo_content (`path`, `locale`, `content`, `time_updated`, `time_created`) VALUES  ('$path', '$locale', '$content', '" . $this->timestampToDate($timeLastUpdated)  . "', now())"; //TODO: use last update from endpoint instead of now
+            $query = "INSERT INTO s_styla_seo_content (`path`, `locale`, `content`, `time_updated`, `time_created`) VALUES  (?, ?, ?, ?, now())"; //TODO: use last update from endpoint instead of now
+            $queryResult = Shopware()->Db()->query($query,[$path,$locale,$content,$this->timestampToDate($timeLastUpdated)]);
         }
-        $queryResult = Shopware()->Db()->query($query);
     }
 
     public function recacheAll() {

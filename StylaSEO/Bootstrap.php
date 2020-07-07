@@ -91,15 +91,15 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
         ));
         /** Currently not used by any client ...
         $form->setElement('text', 'styla_modular_content_username', array(
-            'label' => 'Styla Modular Content ID',
-            'required' => false,
-            'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
+        'label' => 'Styla Modular Content ID',
+        'required' => false,
+        'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
         $form->setElement('text', 'styla_modular_content_api', array(
-            'label' => 'Styla Modular Content Api',
-            'required' => false,
-            'defaultValue' => 'http://live.styla.com',
-            'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
+        'label' => 'Styla Modular Content Api',
+        'required' => false,
+        'defaultValue' => 'http://live.styla.com',
+        'scope' => \Shopware\Models\Config\Element::SCOPE_SHOP
         ));
          */
     }
@@ -128,8 +128,8 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
             $controller = 'stylaseoupdate';
         } else if (strpos($request->getRequestUri(), '/stylaapi') === 0) {
             $controller = 'stylaapi';
-        } else if ($request->getRequestUri() === $this->_magazin_basedir || 
-                strpos($request->getRequestUri(), $this->_magazin_basedir . '/') === 0) {
+        } else if ($request->getRequestUri() === $this->_magazin_basedir ||
+            strpos($request->getRequestUri(), $this->_magazin_basedir . '/') === 0) {
             $controller = 'magazin';
         } else {
             return;
@@ -180,8 +180,8 @@ class Shopware_Plugins_Frontend_StylaSEO_Bootstrap extends Shopware_Components_P
     public function stylaLoadContent($path){
         $shopContext = $this->get('shopware_storefront.context_service')->getShopContext();
         $lang = $shopContext->getShop()->getLocale()->getLocale();
-        $query = "SELECT * FROM s_styla_seo_content WHERE locale = '" . $lang . "' AND path = '" . $path . "'";
-        $queryResult = Shopware()->Db()->fetchAll($query);
+        $query = "SELECT * FROM s_styla_seo_content WHERE locale = ? AND path = ?";
+        $queryResult = Shopware()->Db()->fetchAll($query,[$lang,$path]);
         $html = "";
         if (count($queryResult) > 0){
             $html = html_entity_decode($queryResult[0]['content']);
