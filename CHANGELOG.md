@@ -1,4 +1,7 @@
-### v5.7.0 2020-06-24
+### v5.7.2 2020-07-07
+* Use proper parameters for prepared sql statements
+
+### v5.7.1 2020-06-24
 * improved controller selection
 * improved output of div element and js snippet
 * set status code only on seo api response
