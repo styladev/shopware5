@@ -47,7 +47,7 @@ RUN php -r "unlink('composer-setup.php');"
 
 # Update dependencies of sw-cli-tools
 WORKDIR /home/root/sw-cli-tools
-RUN composer -n install
+RUN composer -n install --ignore-platform-reqs
 
 # Create symlink for sw-cli tools
 RUN ln -s /home/root/sw-cli-tools/bin/sw /usr/bin/sw
