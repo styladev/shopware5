@@ -1,3 +1,6 @@
+### v5.7.3 2021-03-30
+* Provide brand (supplier) information in single product endpoint
+
 ### v5.7.2 2020-07-07
 * Use proper parameters for prepared sql statements
 
