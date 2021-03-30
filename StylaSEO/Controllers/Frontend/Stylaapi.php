@@ -235,6 +235,13 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
         return $shop->getCurrency()->toArray();
     }
 
+    public function getSupplier( $productId )
+    {
+        $query = "SELECT b.name FROM `s_articles` a LEFT JOIN `s_articles_supplier` b ON a.supplierID = b.id WHERE a.id = $productId";
+        $supplier = Shopware()->Db()->fetchRow( $query );
+        return $supplier['name'];
+    }
+
     public function throwErr($error)
     {
         $message['error'] = $error;
@@ -309,6 +316,7 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
         $ekPrices = $this->getEKPrices($article['mainDetail'], $currencyInfo);
         $productEKPrice = $ekPrices['price'];
         $productEKPseudoPrice = $ekPrices['pseudoPrice'];
+        $supplierName = $this->getSupplier( $id );
 
         /*
             This point will be undefined behavior if no EK price exists.
@@ -350,6 +358,7 @@ class Shopware_Controllers_Frontend_Stylaapi extends Shopware_Controllers_Fronte
                 'id' => $article['mainDetail']['number'],
                 'name' => htmlentities($article['name']),
                 'description' => $article['description'],
+                'brand' => $supplierName,
                 'categories' => array_column($article['categories'], 'id'),
                 'saleable' => ($isActive && ($hasStock || !$isLastStock)) ? 'true' : 'false',
                 'price' => $priceFormatted,
